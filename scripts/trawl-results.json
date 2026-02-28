@@ -1,0 +1,355 @@
+[
+  {
+    "bar": {
+      "name": "Scotch Lodge",
+      "menuUrl": "https://www.scotchlodge.com/menus",
+      "website": "https://www.scotchlodge.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:53:57.237Z",
+    "rawTextLength": 185
+  },
+  {
+    "bar": {
+      "name": "Hey Love",
+      "menuUrl": "https://www.heylovepdx.com/beverage",
+      "website": "https://www.heylovepdx.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:54:01.410Z",
+    "rawTextLength": 5612
+  },
+  {
+    "bar": {
+      "name": "Hale Pele",
+      "menuUrl": "https://www.halepele.com/menu",
+      "website": "https://www.halepele.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:54:05.750Z",
+    "rawTextLength": 20345
+  },
+  {
+    "bar": {
+      "name": "Bible Club PDX",
+      "menuUrl": "https://bibleclubpdx.com/home",
+      "website": "https://bibleclubpdx.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:54:10.135Z",
+    "rawTextLength": 474
+  },
+  {
+    "bar": {
+      "name": "Bacchus Bar",
+      "menuUrl": "https://bacchusbarpdx.com/menus",
+      "website": "https://bacchusbarpdx.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:54:13.412Z",
+    "rawTextLength": 0,
+    "error": "HTTP 403 Forbidden"
+  },
+  {
+    "bar": {
+      "name": "The Old Gold",
+      "menuUrl": "https://www.drinkinoregon.com",
+      "website": "https://www.drinkinoregon.com"
+    },
+    "whiskeys": [
+      {
+        "name": "Rittenhouse Bottled-in-Bond Rye (Single Barrel)",
+        "distillery": "Heaven Hill",
+        "type": "rye",
+        "age": null,
+        "abv": 50,
+        "price": null,
+        "pour_size": null,
+        "notes": "2025 Single Barrel selection by Old Gold staff. Bottled-in-Bond. Also used in The Apostle cocktail as 'The Old Gold Rittenhouse Single Barrel Rye'."
+      },
+      {
+        "name": "Sazerac Rye (Single Barrel)",
+        "distillery": "Buffalo Trace",
+        "type": "rye",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "2025 Single Barrel selection by Old Gold staff."
+      },
+      {
+        "name": "Mezcal Union Cirial and Espadin Blend (Single Barrel)",
+        "distillery": "Mezcal Union",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "2025 Single Barrel selection by Old Gold staff. Single variety 100% blend selected in Mexico."
+      },
+      {
+        "name": "Old Taylor Kentucky Bourbon",
+        "distillery": "Old Taylor",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 9,
+        "pour_size": null,
+        "notes": "Used in The Old Old Fashioned and The Alden boilermaker."
+      },
+      {
+        "name": "Sazerac Rye",
+        "distillery": "Buffalo Trace",
+        "type": "rye",
+        "age": null,
+        "abv": null,
+        "price": 13,
+        "pour_size": null,
+        "notes": "Used in Rye Old Fashioned."
+      },
+      {
+        "name": "JTS Brown Bonded Bourbon",
+        "distillery": "Heaven Hill",
+        "type": "bourbon",
+        "age": null,
+        "abv": 50,
+        "price": 10,
+        "pour_size": null,
+        "notes": "Used in Bonded Old Fashioned. Bottled-in-Bond."
+      },
+      {
+        "name": "Wild Turkey Rare Breed",
+        "distillery": "Wild Turkey",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 16,
+        "pour_size": null,
+        "notes": "Used in Bold Fashioned."
+      },
+      {
+        "name": "Elijah Craig Small Batch Bourbon",
+        "distillery": "Heaven Hill",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 12,
+        "pour_size": null,
+        "notes": "Used in 2105 Manhattan cocktail and Elijah Craig & IPA boilermaker."
+      },
+      {
+        "name": "Bulleit Bourbon",
+        "distillery": "Bulleit",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 13,
+        "pour_size": null,
+        "notes": "Used in Old Gold Rush cocktail."
+      },
+      {
+        "name": "Old Forester Bourbon",
+        "distillery": "Brown-Forman",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 14,
+        "pour_size": null,
+        "notes": "Used in Will O' The Wisp cocktail. Also listed as a past single barrel selection."
+      },
+      {
+        "name": "Maker's Mark Whisky",
+        "distillery": "Maker's Mark",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 15,
+        "pour_size": null,
+        "notes": "Used in First & Third cocktail."
+      },
+      {
+        "name": "Buffalo Trace",
+        "distillery": "Buffalo Trace",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 13,
+        "pour_size": null,
+        "notes": "Used in Old Gold Toddy. Also listed as a past single barrel selection."
+      },
+      {
+        "name": "Jim Beam Rye",
+        "distillery": "Jim Beam",
+        "type": "rye",
+        "age": null,
+        "abv": null,
+        "price": 13,
+        "pour_size": null,
+        "notes": "Used in Rye & Pale boilermaker."
+      },
+      {
+        "name": "George Dickel Rye",
+        "distillery": "George Dickel",
+        "type": "rye",
+        "age": null,
+        "abv": null,
+        "price": 9,
+        "pour_size": null,
+        "notes": "Used in Pickle My Dickel boilermaker."
+      },
+      {
+        "name": "Slane Irish Whiskey",
+        "distillery": "Slane",
+        "type": "irish",
+        "age": null,
+        "abv": null,
+        "price": 15,
+        "pour_size": null,
+        "notes": "Used in Finnegan's Wake boilermaker."
+      },
+      {
+        "name": "Jim Beam Black",
+        "distillery": "Jim Beam",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 6,
+        "pour_size": null,
+        "notes": "Featured on Happy Hour menu. Also available as Happy Hour Old Fashioned ($8) and boilermaker with Rainier ($7)."
+      },
+      {
+        "name": "Mellow Corn",
+        "distillery": "Heaven Hill",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 12,
+        "pour_size": null,
+        "notes": "Can be added to Ginger Cooler non-alcoholic cocktail to make it alcoholic."
+      },
+      {
+        "name": "Rittenhouse Rye (Single Barrel - The Apostle)",
+        "distillery": "Heaven Hill",
+        "type": "rye",
+        "age": null,
+        "abv": 50,
+        "price": 16,
+        "pour_size": null,
+        "notes": "Listed as 'The Old Gold Rittenhouse Single Barrel Rye' in The Apostle cocktail. Bottled-in-Bond house single barrel selection."
+      }
+    ],
+    "scrapedAt": "2026-02-28T18:54:37.308Z",
+    "rawTextLength": 12774
+  },
+  {
+    "bar": {
+      "name": "Swine Moonshine & Whiskey Bar",
+      "menuUrl": "https://swinemoonshine.com/portland-swine-moonshine-and-whiskey-bar-drink-menu",
+      "website": "https://swinemoonshine.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:55:53.933Z",
+    "rawTextLength": 11896
+  },
+  {
+    "bar": {
+      "name": "Interurban",
+      "menuUrl": "https://www.interurbanpdx.com",
+      "website": "https://www.interurbanpdx.com"
+    },
+    "whiskeys": [
+      {
+        "name": "Private Barrel Eagle Rare (on Draft)",
+        "distillery": "Buffalo Trace",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 13,
+        "pour_size": null,
+        "notes": "Private barrel selection, served on draft"
+      },
+      {
+        "name": "Private Barrel E.H. Taylor",
+        "distillery": "Buffalo Trace",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 21,
+        "pour_size": null,
+        "notes": "Private barrel selection"
+      },
+      {
+        "name": "Private Barrel Weller Full Proof",
+        "distillery": "Buffalo Trace",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 25,
+        "pour_size": null,
+        "notes": "Private barrel selection"
+      },
+      {
+        "name": "Old Grandad",
+        "distillery": "Beam Suntory",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 9,
+        "pour_size": "1 oz",
+        "notes": "Boilermaker option with 10 oz lager"
+      },
+      {
+        "name": "King's Co. Bourbon",
+        "distillery": "Kings County Distillery",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 14,
+        "pour_size": "1 oz",
+        "notes": "Boilermaker option with 10 oz lager"
+      },
+      {
+        "name": "Westward Whiskey",
+        "distillery": "Westward Whiskey",
+        "type": "single_malt",
+        "age": null,
+        "abv": null,
+        "price": 17,
+        "pour_size": "1 oz",
+        "notes": "Boilermaker option with 10 oz lager; American single malt"
+      },
+      {
+        "name": "Remus Gatsby Reserve 15 yr.",
+        "distillery": "MGP / George Remus",
+        "type": "bourbon",
+        "age": 15,
+        "abv": null,
+        "price": 40,
+        "pour_size": "1 oz",
+        "notes": "Boilermaker option with 10 oz lager"
+      },
+      {
+        "name": "Old Taylor Bourbon",
+        "distillery": "Buffalo Trace",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 8,
+        "pour_size": "2 oz",
+        "notes": "Late night nightcap; served as Old Standard with High Life"
+      }
+    ],
+    "scrapedAt": "2026-02-28T18:56:06.481Z",
+    "rawTextLength": 6849
+  },
+  {
+    "bar": {
+      "name": "Teardrop Lounge",
+      "menuUrl": "https://www.teardroplounge.com",
+      "website": "https://www.teardroplounge.com"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T18:56:11.210Z",
+    "rawTextLength": 1082
+  }
+]

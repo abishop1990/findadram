@@ -40,4 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# script output files
+scripts/trawl-results.json
+scripts/trawl-summary.txt

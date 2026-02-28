@@ -32,12 +32,20 @@ interface WhiskeyCardProps {
   bar_count?: number;
   nearest_bar_name?: string | null;
   nearest_bar_distance?: number | null;
+  index?: number;
 }
 
-export function WhiskeyCard({ id, name, distillery, type, age, abv, bar_count, nearest_bar_name, nearest_bar_distance }: WhiskeyCardProps) {
+export function WhiskeyCard({ id, name, distillery, type, age, abv, bar_count, nearest_bar_name, nearest_bar_distance, index = 0 }: WhiskeyCardProps) {
+  const animationDelay = `${index * 0.1}s`;
+
   return (
     <Link href={`/whiskeys/${id}`}>
-      <Card className="border-t-2 border-t-amber-500 hover:border-t-amber-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer">
+      <Card
+        className="border-t-2 border-t-amber-500 hover:border-t-amber-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer animate-fade-in"
+        style={{
+          animation: `fade-in 0.3s ease-out ${animationDelay}`,
+          animationFillMode: 'both',
+        }}>
         <div>
           <h3 className="font-semibold text-whiskey-900">{name}</h3>
           {distillery && (

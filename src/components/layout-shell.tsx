@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/search', label: 'Search' },
   { href: '/bars', label: 'Bars' },
+  { href: '/whiskeys', label: 'Whiskeys' },
   { href: '/submit', label: 'Submit Menu' },
 ];
 
@@ -38,7 +39,7 @@ function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden sm:flex items-center gap-1" aria-label="Primary navigation">
-          {NAV_LINKS.slice(0, 2).map(({ href, label }) => {
+          {NAV_LINKS.slice(0, 4).map(({ href, label }) => {
             const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
             return (
               <Link
@@ -68,6 +69,17 @@ function Header() {
             ].join(' ')}
           >
             Submit Menu
+          </Link>
+          <Link
+            href="/auth/login"
+            className={[
+              'ml-2 px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 shadow-sm',
+              pathname === '/auth/login'
+                ? 'bg-whiskey-300 text-whiskey-950'
+                : 'bg-whiskey-700 text-whiskey-50 hover:bg-whiskey-600 hover:text-whiskey-50',
+            ].join(' ')}
+          >
+            Sign In
           </Link>
         </nav>
 
@@ -101,12 +113,21 @@ function Header() {
         </button>
       </div>
 
+      {/* Mobile backdrop overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 top-16 z-30 bg-black/20 backdrop-blur-sm transition-opacity duration-200 sm:hidden"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Mobile dropdown */}
       {menuOpen && (
         <nav
           id="mobile-menu"
           aria-label="Mobile navigation"
-          className="sm:hidden border-t border-whiskey-800/60 bg-whiskey-950/95 backdrop-blur-md px-4 pb-4 pt-2"
+          className="sm:hidden relative z-40 border-t border-whiskey-800/60 bg-whiskey-950/95 backdrop-blur-md px-4 pb-4 pt-2 animate-in fade-in slide-in-from-top-2 duration-200"
         >
           {NAV_LINKS.map(({ href, label }) => {
             const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
@@ -126,6 +147,18 @@ function Header() {
               </Link>
             );
           })}
+          <Link
+            href="/auth/login"
+            onClick={() => setMenuOpen(false)}
+            className={[
+              'block px-3 py-3 text-sm font-medium rounded-md transition-colors duration-200 border-b border-whiskey-900/60 last:border-0',
+              pathname === '/auth/login'
+                ? 'text-whiskey-200 bg-whiskey-800/40'
+                : 'text-whiskey-400 hover:text-whiskey-100 hover:bg-whiskey-800/30',
+            ].join(' ')}
+          >
+            Sign In
+          </Link>
         </nav>
       )}
     </header>

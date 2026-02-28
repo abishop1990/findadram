@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ExtractedMenu, TrawlResult, ExtractedWhiskey } from '@/types/trawler';
-import { normalizeWhiskeyName, similarityRatio } from './normalize';
+import { normalizeWhiskeyName, similarityRatio, parsePrivateBarrel } from './normalize';
 import { judgeDedup } from './extract';
 
 const FUZZY_THRESHOLD = 0.85;
@@ -90,9 +90,16 @@ async function findOrCreateWhiskey(
 ): Promise<{ id: string; created: boolean } | null> {
   if (!extracted.name || extracted.name.trim().length === 0) return null;
 
-  const normalized = normalizeWhiskeyName(extracted.name);
+  // Separate private barrel / store pick info from the base name
+  const { baseName, pickInfo } = parsePrivateBarrel(extracted.name);
+  const normalized = normalizeWhiskeyName(baseName);
 
-  // Tier 1: Exact normalized name match
+  if (normalized.length === 0) return null;
+
+  // Extract the first significant word for filtered fuzzy search
+  const firstWord = normalized.split(/\s+/)[0] ?? '';
+
+  // Tier 1: Exact normalized name match (uses the base name, not the pick variant)
   const { data: exactMatch } = await supabase
     .from('whiskeys')
     .select('id, name')
@@ -104,42 +111,52 @@ async function findOrCreateWhiskey(
     return { id: exactMatch.id, created: false };
   }
 
-  // Tier 2: Fuzzy Levenshtein match
-  const { data: candidates } = await supabase
-    .from('whiskeys')
-    .select('id, name, normalized_name')
-    .limit(100);
+  // Tier 2: Fuzzy Levenshtein match — filter by first word with ilike to
+  // avoid scanning the entire whiskeys table
+  if (firstWord.length > 0) {
+    const { data: candidates } = await supabase
+      .from('whiskeys')
+      .select('id, name, normalized_name')
+      .ilike('normalized_name', `${firstWord}%`)
+      .limit(50);
 
-  if (candidates) {
-    for (const candidate of candidates) {
-      if (similarityRatio(normalized, candidate.normalized_name) >= FUZZY_THRESHOLD) {
-        return { id: candidate.id, created: false };
+    if (candidates && candidates.length > 0) {
+      for (const candidate of candidates) {
+        if (similarityRatio(normalized, candidate.normalized_name) >= FUZZY_THRESHOLD) {
+          return { id: candidate.id, created: false };
+        }
       }
-    }
 
-    // Tier 3: Claude judge for close-but-not-exact matches
-    const closeMatches = candidates.filter(
-      (c) => similarityRatio(normalized, c.normalized_name) >= 0.6
-    );
+      // Tier 3: Claude judge for close-but-not-exact matches
+      const closeMatches = candidates.filter(
+        (c) => similarityRatio(normalized, c.normalized_name) >= 0.6
+      );
 
-    for (const candidate of closeMatches.slice(0, 3)) {
-      const isSame = await judgeDedup(extracted.name, candidate.name);
-      if (isSame) {
-        return { id: candidate.id, created: false };
+      for (const candidate of closeMatches.slice(0, 3)) {
+        const isSame = await judgeDedup(extracted.name, candidate.name);
+        if (isSame) {
+          return { id: candidate.id, created: false };
+        }
       }
     }
   }
 
   // No match found — create new whiskey
+  // Store the original full name (with pick info) as the display name,
+  // and attach pick metadata as notes if present.
+  const insertNotes = pickInfo
+    ? [extracted.notes, `Pick: ${pickInfo}`].filter(Boolean).join('; ')
+    : extracted.notes ?? null;
+
   const { data: newWhiskey, error } = await supabase
     .from('whiskeys')
     .insert({
-      name: extracted.name.trim(),
+      name: baseName.trim(),
       distillery: extracted.distillery ?? null,
       type: extracted.type ?? 'other',
       age: extracted.age ?? null,
       abv: extracted.abv ?? null,
-      description: extracted.notes ?? null,
+      description: insertNotes,
       region: null,
       country: null,
       image_url: null,

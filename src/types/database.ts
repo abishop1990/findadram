@@ -118,6 +118,23 @@ export interface BarActivity {
   created_at: string;
 }
 
+export type ClaimStatus = 'pending' | 'approved' | 'rejected';
+
+export interface BarClaim {
+  id: string;
+  bar_id: string;
+  user_id: string;
+  status: ClaimStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export type BarClaimInsert = {
+  bar_id: string;
+  user_id: string;
+  status?: ClaimStatus;
+};
+
 export type BarInsert = Omit<Bar, 'id' | 'created_at' | 'updated_at' | 'metadata'> & {
   id?: string;
   metadata?: Record<string, unknown>;
@@ -204,6 +221,12 @@ export interface Database {
         Update: Partial<Omit<UserProfile, 'id' | 'created_at' | 'updated_at'>>;
         Relationships: [];
       };
+      bar_claims: {
+        Row: BarClaim;
+        Insert: BarClaimInsert;
+        Update: Partial<BarClaimInsert>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -223,6 +246,7 @@ export interface Database {
     Enums: {
       whiskey_type: WhiskeyType;
       trawl_status: TrawlStatus;
+      claim_status: ClaimStatus;
     };
     CompositeTypes: Record<string, never>;
   };

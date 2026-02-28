@@ -11,12 +11,20 @@ interface BarCardProps {
   state?: string | null;
   distance_meters?: number | null;
   whiskey_count?: number;
+  index?: number;
 }
 
-export function BarCard({ id, name, address, city, state, distance_meters, whiskey_count }: BarCardProps) {
+export function BarCard({ id, name, address, city, state, distance_meters, whiskey_count, index = 0 }: BarCardProps) {
+  const animationDelay = `${index * 0.1}s`;
+
   return (
     <Link href={`/bars/${id}`}>
-      <Card className="border-l-4 border-l-amber-500 hover:border-l-amber-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer">
+      <Card
+        className="border-l-4 border-l-amber-500 hover:border-l-amber-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer animate-fade-in"
+        style={{
+          animation: `fade-in 0.3s ease-out ${animationDelay}`,
+          animationFillMode: 'both',
+        }}>
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-whiskey-900 truncate">{name}</h3>

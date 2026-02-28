@@ -80,24 +80,24 @@ export function SearchBar({ defaultQuery = '', defaultType = 'whiskey' as Search
   );
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-2xl">
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <div className="relative flex-1">
+    <div ref={wrapperRef} className="relative w-full max-w-2xl px-4 sm:px-0">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+        <div className="relative flex-1 order-2 sm:order-1">
           <Input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
             placeholder={type === 'bar' ? 'Search bars near you...' : 'Search whiskeys...'}
-            className="pr-4"
+            className="w-full pr-4 h-11 sm:h-10"
           />
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-lg border border-oak-200 bg-white shadow-lg">
+            <div className="absolute top-full left-0 right-0 z-50 mt-2 rounded-lg border border-oak-200 bg-white shadow-lg max-h-60 overflow-y-auto scrollbar-none">
               {suggestions.map((s) => (
                 <button
                   key={s.id}
                   type="button"
-                  className="w-full px-4 py-2 text-left text-sm hover:bg-amber-50 first:rounded-t-lg last:rounded-b-lg"
+                  className="w-full px-4 py-3 sm:py-2 text-left text-sm hover:bg-amber-50 first:rounded-t-lg last:rounded-b-lg transition-colors duration-150 min-h-11 sm:min-h-auto"
                   onClick={() => handleSuggestionClick(s)}
                 >
                   {s.name}
@@ -106,23 +106,23 @@ export function SearchBar({ defaultQuery = '', defaultType = 'whiskey' as Search
             </div>
           )}
         </div>
-        <div className="flex rounded-lg border border-oak-300 overflow-hidden">
+        <div className="flex rounded-lg border border-oak-300 overflow-hidden order-3 sm:order-2">
           <button
             type="button"
-            className={`px-3 py-2 text-sm font-medium transition-colors ${type === 'whiskey' ? 'bg-amber-600 text-white' : 'bg-white text-oak-600 hover:bg-oak-50'}`}
+            className={`flex-1 sm:flex-none px-3 py-2.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors duration-150 min-h-11 sm:min-h-auto ${type === 'whiskey' ? 'bg-amber-600 text-white' : 'bg-white text-oak-600 hover:bg-oak-50'}`}
             onClick={() => setType('whiskey')}
           >
             Whiskey
           </button>
           <button
             type="button"
-            className={`px-3 py-2 text-sm font-medium transition-colors ${type === 'bar' ? 'bg-amber-600 text-white' : 'bg-white text-oak-600 hover:bg-oak-50'}`}
+            className={`flex-1 sm:flex-none px-3 py-2.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors duration-150 min-h-11 sm:min-h-auto ${type === 'bar' ? 'bg-amber-600 text-white' : 'bg-white text-oak-600 hover:bg-oak-50'}`}
             onClick={() => setType('bar')}
           >
             Bar
           </button>
         </div>
-        <Button type="submit">Search</Button>
+        <Button type="submit" className="order-1 sm:order-3 w-full sm:w-auto min-h-11">Search</Button>
       </form>
     </div>
   );

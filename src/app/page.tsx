@@ -134,27 +134,27 @@ export default async function HomePage() {
         </div>
 
         {/* Content */}
-        <div className="relative mx-auto max-w-6xl px-4 py-20 md:py-32 text-center">
+        <div className="relative mx-auto max-w-6xl px-4 py-12 sm:py-20 md:py-32 text-center">
           {/* Portland badge */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-whiskey-800/60 border border-whiskey-700 px-3 py-1 mb-6 text-xs font-medium text-whiskey-300 uppercase tracking-widest">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-whiskey-800/60 border border-whiskey-700 px-3 py-1 mb-4 sm:mb-6 text-xs font-medium text-whiskey-300 uppercase tracking-widest">
             <svg className="h-3 w-3 text-whiskey-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433 5.737 5.737 0 00.28.14l.019.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
             </svg>
             Portland, OR
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold text-whiskey-100 mb-5 tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-whiskey-100 mb-3 sm:mb-5 tracking-tight leading-tight">
             Discover Portland&apos;s<br className="hidden sm:block" /> Best Whiskey
           </h1>
 
-          <p className="text-lg md:text-xl text-whiskey-300 mb-3 max-w-xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-whiskey-300 mb-2 sm:mb-3 max-w-xl mx-auto leading-relaxed">
             Find whiskeys at bars near you. Track prices. Share discoveries.
           </p>
-          <p className="text-sm text-whiskey-500 mb-10">
+          <p className="text-xs sm:text-sm text-whiskey-500 mb-8 sm:mb-10">
             Search by name, distillery, or style — or use your location to see what&apos;s nearby.
           </p>
 
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3 sm:gap-4">
             <SearchBar />
             <LocationPrompt />
           </div>
@@ -163,13 +163,13 @@ export default async function HomePage() {
 
       {/* ── Stats bar ─────────────────────────────────────────────────────── */}
       <section className="border-b border-oak-200 bg-white" aria-label="Platform statistics">
-        <div className="mx-auto max-w-6xl px-4 py-6">
-          <dl className={`grid divide-x divide-oak-200 ${stats.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+        <div className="mx-auto max-w-6xl px-4 py-4 sm:py-6">
+          <dl className={`grid gap-2 sm:gap-0 sm:divide-x divide-oak-200 ${stats.length === 2 ? 'grid-cols-2 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
             {stats.map(({ label, value, icon }) => (
-              <div key={label} className="flex flex-col items-center gap-1 px-4 py-2 text-center">
-                <div className="text-whiskey-400 mb-1">{icon}</div>
+              <div key={label} className="flex flex-col items-center gap-1 px-2 sm:px-4 py-2 sm:py-2 text-center border-b border-oak-200 sm:border-0 last:border-0">
+                <div className="text-whiskey-400 mb-0.5 sm:mb-1">{icon}</div>
                 <dt className="text-xs font-medium uppercase tracking-wider text-oak-500">{label}</dt>
-                <dd className="text-2xl md:text-3xl font-bold text-whiskey-800">
+                <dd className="text-xl sm:text-2xl md:text-3xl font-bold text-whiskey-800">
                   {value.toLocaleString()}
                 </dd>
               </div>
@@ -371,10 +371,10 @@ export default async function HomePage() {
             find their next dram.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto px-4 sm:px-0">
             <Link
               href="/submit"
-              className="inline-flex items-center gap-2 rounded-lg bg-whiskey-400 px-6 py-3 text-sm font-semibold text-whiskey-950 shadow hover:bg-whiskey-300 transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-whiskey-400 px-6 py-3 text-sm font-semibold text-whiskey-950 shadow hover:bg-whiskey-300 transition-colors min-h-11 sm:min-h-auto"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -383,7 +383,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/bars"
-              className="inline-flex items-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
             >
               Browse Portland Bars
             </Link>

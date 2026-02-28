@@ -3,6 +3,7 @@ import { getAnthropicClient, MODELS } from './client';
 import {
   TEXT_EXTRACTION_SYSTEM,
   VISION_EXTRACTION_SYSTEM,
+  REVIEW_EXTRACTION_SYSTEM,
   DEDUP_JUDGE_SYSTEM,
   ExtractedMenuSchema,
   DedupJudgmentSchema,
@@ -17,7 +18,7 @@ export async function extractFromText(html: string): Promise<ExtractedMenu> {
 
   const response = await client.messages.create({
     model: MODELS.TEXT_EXTRACTION,
-    max_tokens: 4096,
+    max_tokens: 16384,
     system: TEXT_EXTRACTION_SYSTEM,
     messages: [
       {
@@ -64,7 +65,7 @@ export async function extractFromImage(
 
   const response = await client.messages.create({
     model: MODELS.VISION_EXTRACTION,
-    max_tokens: 4096,
+    max_tokens: 16384,
     system: VISION_EXTRACTION_SYSTEM,
     messages: [
       {
@@ -113,6 +114,48 @@ export async function extractFromImage(
     extraction_method: 'vision',
     confidence: 0,
   };
+}
+
+export async function extractFromReviews(
+  reviewText: string,
+  barName: string
+): Promise<{ name: string; type?: string; context?: string }[]> {
+  const client = getAnthropicClient();
+
+  const response = await client.messages.create({
+    model: MODELS.DEDUP_JUDGE, // Haiku — cheap and fast for text extraction
+    max_tokens: 4096,
+    system: REVIEW_EXTRACTION_SYSTEM,
+    messages: [
+      {
+        role: 'user',
+        content: `Extract specific whiskey brand names mentioned in these Google Reviews for "${barName}".
+
+Reviews:
+${reviewText.slice(0, 8000)}
+
+Return JSON only: {"whiskeys_mentioned": [{"name": "...", "type": "bourbon|scotch|irish|rye|japanese|canadian|single_malt|blended|other", "context": "brief quote from review"}]}
+If no specific brands are mentioned, return {"whiskeys_mentioned": []}`,
+      },
+    ],
+  });
+
+  const text = response.content
+    .filter((block): block is Anthropic.TextBlock => block.type === 'text')
+    .map((block) => block.text)
+    .join('');
+
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return parsed.whiskeys_mentioned || [];
+    }
+  } catch {
+    // Fall through
+  }
+
+  return [];
 }
 
 export async function judgeDedup(nameA: string, nameB: string): Promise<boolean> {

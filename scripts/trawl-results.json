@@ -1,12 +1,27 @@
 [
   {
     "bar": {
-      "name": "Scotch Lodge",
-      "menuUrl": "https://www.scotchlodge.com/menus",
-      "website": "https://www.scotchlodge.com"
+      "id": "aaaaaaaa-abd0-0000-0000-000000000004",
+      "name": "Paydirt",
+      "menuUrl": "https://www.paydirtbar.com",
+      "website": "https://www.paydirtbar.com"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:29:08.369Z",
+    "scrapedAt": "2026-02-28T20:36:20.260Z",
+    "rawTextLength": 38,
+    "contentHash": null,
+    "sourceAttribution": null,
+    "error": "Page returned too little content"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000002",
+      "name": "Scotch Lodge",
+      "menuUrl": "http://scotchlodge.com/",
+      "website": "http://scotchlodge.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:20.863Z",
     "rawTextLength": 0,
     "contentHash": null,
     "sourceAttribution": null,
@@ -14,82 +29,383 @@
   },
   {
     "bar": {
-      "name": "Hey Love",
-      "menuUrl": "https://www.heylovepdx.com/beverage",
-      "website": "https://www.heylovepdx.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:29:09.993Z",
-    "rawTextLength": 91,
-    "contentHash": "5e22420271df762acfc428514e857ece7b12b3780ab058e95f6b047b3c4731a3",
-    "sourceAttribution": "Website menu at heylovepdx.com/beverage, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Hale Pele",
-      "menuUrl": "https://www.halepele.com/menu",
-      "website": "https://www.halepele.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:29:13.775Z",
-    "rawTextLength": 23146,
-    "contentHash": "a710ebbd95ac4b20ded822f9e3f306f03be9b8a27ad858ab430b8387d697d7f0",
-    "sourceAttribution": "Website menu at halepele.com/menu, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Bible Club PDX",
-      "menuUrl": "https://bibleclubpdx.com/home",
-      "website": "https://bibleclubpdx.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:29:16.918Z",
-    "rawTextLength": 622,
-    "contentHash": "38325ba41c14f5e94fd1415b66e1f96cfbfc2f5c57e79b7a066c3c6a3e6cb9c0",
-    "sourceAttribution": "Website menu at bibleclubpdx.com/home, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Bacchus Bar",
-      "menuUrl": "https://bacchusbarpdx.com/menus",
-      "website": "https://bacchusbarpdx.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:29:19.204Z",
-    "rawTextLength": 0,
-    "contentHash": null,
-    "sourceAttribution": null,
-    "error": "HTTP 403 Forbidden"
-  },
-  {
-    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000003",
       "name": "The Old Gold",
-      "menuUrl": "https://www.drinkinoregon.com",
-      "website": "https://www.drinkinoregon.com"
+      "menuUrl": "http://drinkinoregon.com/",
+      "website": "http://drinkinoregon.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:29:23.878Z",
+    "scrapedAt": "2026-02-28T20:36:22.218Z",
     "rawTextLength": 14950,
     "contentHash": "f73589729f2946e5e3b51c3a05e68503f6272d9433ab7eb72652eab0433cc25a",
     "sourceAttribution": "Website menu at drinkinoregon.com/, fetched 2026-02-28"
   },
   {
     "bar": {
-      "name": "Swine Moonshine & Whiskey Bar",
-      "menuUrl": "https://swinemoonshine.com/portland-swine-moonshine-and-whiskey-bar-drink-menu",
-      "website": "https://swinemoonshine.com"
+      "id": "aaaaaaaa-abd0-0000-0000-000000000005",
+      "name": "Pope House Bourbon Lounge",
+      "menuUrl": "http://www.popehouselounge.com/",
+      "website": "http://www.popehouselounge.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:30:39.565Z",
-    "rawTextLength": 11843,
-    "contentHash": "4e55ef795fb192f7d985b2d5bb55f3ec3bc44e787a3e37216b46625e82241f88",
-    "sourceAttribution": "Website menu at swinemoonshine.com/portland-swine-moonshine-and-whiskey-bar-drink-menu, fetched 2026-02-28"
+    "scrapedAt": "2026-02-28T20:36:25.327Z",
+    "rawTextLength": 445,
+    "contentHash": "4d7d32a7520a27e49673f9d6467e169c7cfa79f9581c39b5dcc389adec24b7ba",
+    "sourceAttribution": "Website menu at popehouselounge.com/, fetched 2026-02-28"
   },
   {
     "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000001",
+      "name": "Multnomah Whiskey Library",
+      "menuUrl": "http://www.mwlpdx.com/",
+      "website": "http://www.mwlpdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:29.475Z",
+    "rawTextLength": 128,
+    "contentHash": "5867eeb92441bbad837a81424205f40f4354fee649ca898a353c777625997af2",
+    "sourceAttribution": "Website menu at mwlpdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000007",
+      "name": "Loyal Legion",
+      "menuUrl": "http://loyallegionbeerhall.com/",
+      "website": "http://loyallegionbeerhall.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:33.045Z",
+    "rawTextLength": 129,
+    "contentHash": "2b187cafee2ad4532f886d77d544d073f452d884f5ca971e13ddc6821f87f158",
+    "sourceAttribution": "Website menu at loyallegionbeerhall.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000008",
+      "name": "The Eastburn",
+      "menuUrl": "http://theeastburn.com/",
+      "website": "http://theeastburn.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:35.761Z",
+    "rawTextLength": 0,
+    "contentHash": null,
+    "sourceAttribution": null,
+    "error": "Page returned too little content"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000010",
+      "name": "Holy Ghost Bar",
+      "menuUrl": "http://www.holyghostbar.com/",
+      "website": "http://www.holyghostbar.com/"
+    },
+    "whiskeys": [
+      {
+        "name": "Xicaru Silver",
+        "distillery": "Xicaru",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": "0.75oz",
+        "notes": "Part of Xicaru Flight ($25 for all three: Xicaru Silver, Xicaru Reposado, Xicaru Añejo)"
+      },
+      {
+        "name": "Xicaru Reposado",
+        "distillery": "Xicaru",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": "0.75oz",
+        "notes": "Part of Xicaru Flight ($25 for all three: Xicaru Silver, Xicaru Reposado, Xicaru Añejo)"
+      },
+      {
+        "name": "Xicaru Añejo",
+        "distillery": "Xicaru",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": "0.75oz",
+        "notes": "Part of Xicaru Flight ($25 for all three: Xicaru Silver, Xicaru Reposado, Xicaru Añejo)"
+      },
+      {
+        "name": "Jim Beam Black",
+        "distillery": "Jim Beam",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 6,
+        "pour_size": null,
+        "notes": "Happy hour (3-5PM Mon-Fri)"
+      },
+      {
+        "name": "Hornitos Plata",
+        "distillery": "Hornitos",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": 6,
+        "pour_size": null,
+        "notes": "Happy hour (3-5PM Mon-Fri)"
+      }
+    ],
+    "scrapedAt": "2026-02-28T20:36:43.648Z",
+    "rawTextLength": 12164,
+    "contentHash": "9e6ec2658b97e3f1c2faa4738cdc7f01fea95698854ac4ca485489e1150ec1bb",
+    "sourceAttribution": "Website menu at holyghostbar.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000011",
+      "name": "Teardrop Lounge",
+      "menuUrl": "http://www.teardroplounge.com/",
+      "website": "http://www.teardroplounge.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:47.375Z",
+    "rawTextLength": 1632,
+    "contentHash": "b7a8f66ee37f0b6aed7bc7a050a4835a0fb1ac1b9b99147a0aed86e76e871517",
+    "sourceAttribution": "Website menu at teardroplounge.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000013",
+      "name": "Hey Love",
+      "menuUrl": "https://www.heylovepdx.com/",
+      "website": "https://www.heylovepdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:50.469Z",
+    "rawTextLength": 91,
+    "contentHash": "5e22420271df762acfc428514e857ece7b12b3780ab058e95f6b047b3c4731a3",
+    "sourceAttribution": "Website menu at heylovepdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000014",
+      "name": "Bible Club PDX",
+      "menuUrl": "http://www.bibleclubpdx.com/",
+      "website": "http://www.bibleclubpdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:36:57.101Z",
+    "rawTextLength": 622,
+    "contentHash": "38325ba41c14f5e94fd1415b66e1f96cfbfc2f5c57e79b7a066c3c6a3e6cb9c0",
+    "sourceAttribution": "Website menu at bibleclubpdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000016",
+      "name": "Rum Club",
+      "menuUrl": "http://rumclubpdx.com/",
+      "website": "http://rumclubpdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:37:04.026Z",
+    "rawTextLength": 88,
+    "contentHash": "5749b15dc23e0ec7c4b332b176db4c4ee6f1683c71cb23f79649f44d5975be09",
+    "sourceAttribution": "Website menu at rumclubpdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000017",
+      "name": "The Sapphire Hotel",
+      "menuUrl": "http://www.thesapphirehotel.com/",
+      "website": "http://www.thesapphirehotel.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:37:07.679Z",
+    "rawTextLength": 516,
+    "contentHash": "e8d1bed76ff69cbe449d7c63d7f956c3cbe91bc8a4e90448fe36d65a6272fdf3",
+    "sourceAttribution": "Website menu at thesapphirehotel.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000019",
+      "name": "Too Soon",
+      "menuUrl": "http://toosoonpdx.com/",
+      "website": "http://toosoonpdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:37:11.297Z",
+    "rawTextLength": 2407,
+    "contentHash": "8e93581187801dd3b79e22de938cb7b21f5bd56fff3b7f0755a2fefab3ec9c93",
+    "sourceAttribution": "Website menu at toosoonpdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000020",
+      "name": "Bull Run Distillery",
+      "menuUrl": "https://www.bullrundistillery.com/",
+      "website": "https://www.bullrundistillery.com/"
+    },
+    "whiskeys": [
+      {
+        "name": "16 yr TrackTown American Whiskey Finished in Pinot Noir Barrels",
+        "distillery": "Bull Run Distillery",
+        "type": "other",
+        "age": 16,
+        "abv": 50,
+        "price": null,
+        "pour_size": null,
+        "notes": "Finished in Pinot Noir barrels. Barrel number 179. Finished in a Seguin-Moreau Cooperage barrel from Domaine Drouhin Winery. 100 Proof. 16 years old with 18 months in French oak finishing barrel. Private barrel selection for TrackTown."
+      }
+    ],
+    "scrapedAt": "2026-02-28T20:37:16.434Z",
+    "rawTextLength": 3000,
+    "contentHash": "b0f3f7a89db1c7997d02f8585f32975499897893780214acdea887a887c46b4b",
+    "sourceAttribution": "Website menu at bullrundistillery.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000022",
+      "name": "Stone Barn Brandyworks",
+      "menuUrl": "http://www.stonebarnbrandyworks.com/",
+      "website": "http://www.stonebarnbrandyworks.com/"
+    },
+    "whiskeys": [
+      {
+        "name": "Bottled in Bond 100% Straight Oat Whiskey",
+        "distillery": "Stone Barn Brandyworks",
+        "type": "other",
+        "age": null,
+        "abv": 50,
+        "price": null,
+        "pour_size": null,
+        "notes": "Bottled in Bond designation; made from 100% oat mash"
+      },
+      {
+        "name": "Cherry Cordial",
+        "distillery": "Stone Barn Brandyworks",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "Cherry cordial spirit"
+      },
+      {
+        "name": "Oregon Pear Brandy",
+        "distillery": "Stone Barn Brandyworks",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "Pear brandy made from Oregon pears"
+      },
+      {
+        "name": "Fairytale of New York",
+        "distillery": "Stone Barn Brandyworks",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "Spirit product; exact category unclear from menu text"
+      },
+      {
+        "name": "Old Pearlicious",
+        "distillery": "Stone Barn Brandyworks",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "Spirit product; likely pear-based given brandyworks context"
+      },
+      {
+        "name": "Peach and Ginger",
+        "distillery": "Stone Barn Brandyworks",
+        "type": "other",
+        "age": null,
+        "abv": null,
+        "price": null,
+        "pour_size": null,
+        "notes": "Peach and ginger flavored spirit or liqueur"
+      }
+    ],
+    "scrapedAt": "2026-02-28T20:37:27.717Z",
+    "rawTextLength": 176,
+    "contentHash": "a510d73a4e55151bd7be45ae4c944ecf00e2a6e65951917e920671a7f1fc9df0",
+    "sourceAttribution": "Website menu at stonebarnbrandyworks.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000023",
+      "name": "Freeland Spirits",
+      "menuUrl": "http://www.freelandspirits.com/",
+      "website": "http://www.freelandspirits.com/"
+    },
+    "whiskeys": [
+      {
+        "name": "Freeland Wheated Bourbon",
+        "distillery": "Freeland Spirits",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 69.95,
+        "pour_size": "bottle",
+        "notes": "Wheated bourbon; listed under Spirits and Limited-Editions"
+      },
+      {
+        "name": "Rye Whiskey",
+        "distillery": "Freeland Spirits",
+        "type": "rye",
+        "age": null,
+        "abv": null,
+        "price": 89,
+        "pour_size": "bottle",
+        "notes": "Freeland Spirits rye whiskey"
+      },
+      {
+        "name": "Cask Strength Bourbon",
+        "distillery": "Freeland Spirits",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 56.99,
+        "pour_size": "bottle",
+        "notes": "Cask strength expression"
+      },
+      {
+        "name": "Bourbon",
+        "distillery": "Freeland Spirits",
+        "type": "bourbon",
+        "age": null,
+        "abv": null,
+        "price": 49.99,
+        "pour_size": "bottle",
+        "notes": "Freeland Spirits core bourbon"
+      }
+    ],
+    "scrapedAt": "2026-02-28T20:37:35.518Z",
+    "rawTextLength": 19014,
+    "contentHash": "7ccf1a22e0788bc2fdd14988b188e45fbf01679750de199ab39a4e4136311ada",
+    "sourceAttribution": "Website menu at freelandspirits.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000006",
+      "name": "Swine Moonshine & Whiskey Bar",
+      "menuUrl": "http://swinemoonshine.com/",
+      "website": "http://swinemoonshine.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:37:39.863Z",
+    "rawTextLength": 3789,
+    "contentHash": "83277a4ab0f390ec9691f41d1143eb3b0be58e39776b7c29fe228e66bdc60327",
+    "sourceAttribution": "Website menu at swinemoonshine.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "aaaaaaaa-abd0-0000-0000-000000000009",
       "name": "Interurban",
-      "menuUrl": "https://www.interurbanpdx.com",
-      "website": "https://www.interurbanpdx.com"
+      "menuUrl": "http://www.interurbanpdx.com/",
+      "website": "http://www.interurbanpdx.com/"
     },
     "whiskeys": [
       {
@@ -100,7 +416,7 @@
         "abv": null,
         "price": 13,
         "pour_size": null,
-        "notes": "Private barrel selection, served on draft. Happy hour: $2 off each."
+        "notes": "Private barrel selection, served on draft. Happy hour: $2 off (Old Fashioned preparation)"
       },
       {
         "name": "Private Barrel E.H. Taylor",
@@ -110,7 +426,7 @@
         "abv": null,
         "price": 21,
         "pour_size": null,
-        "notes": "Private barrel selection. Happy hour: $2 off each."
+        "notes": "Private barrel selection. Happy hour: $2 off (Old Fashioned preparation)"
       },
       {
         "name": "Private Barrel Weller Full Proof",
@@ -120,37 +436,37 @@
         "abv": null,
         "price": 25,
         "pour_size": null,
-        "notes": "Private barrel selection. Happy hour: $2 off each."
+        "notes": "Private barrel selection. Happy hour: $2 off (Old Fashioned preparation)"
       },
       {
-        "name": "Old Grand-Dad Boilermaker",
+        "name": "Old Grand-Dad Bourbon",
         "distillery": "Beam Suntory",
         "type": "bourbon",
         "age": null,
         "abv": null,
         "price": 9,
-        "pour_size": "1 oz",
-        "notes": "Served as boilermaker with 10 oz lager."
+        "pour_size": null,
+        "notes": "Listed as boilermaker option (10 oz lager, 1 oz whiskey)"
       },
       {
-        "name": "King's County Bourbon Boilermaker",
+        "name": "King's County Bourbon",
         "distillery": "King's County Distillery",
         "type": "bourbon",
         "age": null,
         "abv": null,
         "price": 14,
-        "pour_size": "1 oz",
-        "notes": "Served as boilermaker with 10 oz lager."
+        "pour_size": null,
+        "notes": "Listed as boilermaker option (10 oz lager, 1 oz whiskey)"
       },
       {
-        "name": "Westward Whiskey Boilermaker",
+        "name": "Westward Whiskey",
         "distillery": "Westward Whiskey",
         "type": "other",
         "age": null,
         "abv": null,
         "price": 17,
-        "pour_size": "1 oz",
-        "notes": "Served as boilermaker with 10 oz lager."
+        "pour_size": null,
+        "notes": "American single malt. Listed as boilermaker option (10 oz lager, 1 oz whiskey)"
       },
       {
         "name": "Remus Gatsby Reserve 15 Year",
@@ -164,801 +480,415 @@
       },
       {
         "name": "Old Taylor Bourbon",
-        "distillery": "Campari America",
+        "distillery": "Buffalo Trace / Campari",
         "type": "bourbon",
         "age": null,
         "abv": null,
         "price": 8,
         "pour_size": "2 oz",
-        "notes": "Late night happy hour. Served as part of Old Standard nightcap with High Life. Option alongside Pueblo Viejo Blanco."
-      },
-      {
-        "name": "Fernet Branca",
-        "distillery": "Fratelli Branca",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 4,
-        "pour_size": "1 oz",
-        "notes": "Late night happy hour Shift Change nightcap. Option alongside Branca Menta."
-      },
-      {
-        "name": "Branca Menta",
-        "distillery": "Fratelli Branca",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 4,
-        "pour_size": "1 oz",
-        "notes": "Late night happy hour Shift Change nightcap. Option alongside Fernet Branca."
+        "notes": "Late night happy hour Old Standard package — includes High Life and 2 oz pour of Old Taylor Bourbon or Pueblo Viejo Blanco for $8 total"
       }
     ],
-    "scrapedAt": "2026-02-28T19:30:54.449Z",
+    "scrapedAt": "2026-02-28T20:37:55.865Z",
     "rawTextLength": 9568,
     "contentHash": "4e9921ef3a107975b6c63b2f1c0f94dcc4e08bc6b024ad2b161b35c81892e603",
     "sourceAttribution": "Website menu at interurbanpdx.com/, fetched 2026-02-28"
   },
   {
     "bar": {
-      "name": "Teardrop Lounge",
-      "menuUrl": "https://www.teardroplounge.com",
-      "website": "https://www.teardroplounge.com"
+      "id": "aaaaaaaa-abd0-0000-0000-000000000012",
+      "name": "Angel Face",
+      "menuUrl": "http://www.angelfaceportland.com/",
+      "website": "http://www.angelfaceportland.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:30:57.489Z",
-    "rawTextLength": 1632,
-    "contentHash": "b7a8f66ee37f0b6aed7bc7a050a4835a0fb1ac1b9b99147a0aed86e76e871517",
-    "sourceAttribution": "Website menu at teardroplounge.com/, fetched 2026-02-28"
+    "scrapedAt": "2026-02-28T20:37:58.811Z",
+    "rawTextLength": 647,
+    "contentHash": "eb4dfbc24c27696bfba25d1072f8b287b92a789cc8d89b788119c702dad94b73",
+    "sourceAttribution": "Website menu at angelfaceportland.com/, fetched 2026-02-28"
   },
   {
     "bar": {
-      "name": "Multnomah Whiskey Library",
-      "menuUrl": "https://mwlpdx.com/",
-      "website": "https://mwlpdx.com"
+      "id": "aaaaaaaa-abd0-0000-0000-000000000015",
+      "name": "Hale Pele",
+      "menuUrl": "http://halepele.com/",
+      "website": "http://halepele.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:00.773Z",
-    "rawTextLength": 128,
-    "contentHash": "5867eeb92441bbad837a81424205f40f4354fee649ca898a353c777625997af2",
-    "sourceAttribution": "Website menu at mwlpdx.com/, fetched 2026-02-28"
+    "scrapedAt": "2026-02-28T20:38:01.984Z",
+    "rawTextLength": 800,
+    "contentHash": "bbc46ac7dcdac03e48cdf41a1a3e788ce81f9f25ad2bcdb61817ed68cec3079d",
+    "sourceAttribution": "Website menu at halepele.com/, fetched 2026-02-28"
   },
   {
     "bar": {
-      "name": "Pepe Le Moko",
-      "menuUrl": "https://pepelemokopdx.com/",
-      "website": "https://pepelemokopdx.com"
+      "id": "aaaaaaaa-abd0-0000-0000-000000000018",
+      "name": "Bacchus Bar",
+      "menuUrl": "https://bacchusbarpdx.com/",
+      "website": "https://bacchusbarpdx.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:20.965Z",
+    "scrapedAt": "2026-02-28T20:38:04.261Z",
     "rawTextLength": 0,
     "contentHash": null,
     "sourceAttribution": null,
-    "error": "fetch failed"
+    "error": "HTTP 403 Forbidden"
   },
   {
     "bar": {
-      "name": "Doug Fir Lounge",
-      "menuUrl": "https://www.dougfirlounge.com/",
-      "website": "https://www.dougfirlounge.com"
+      "id": "aaaaaaaa-abd0-0000-0000-000000000021",
+      "name": "New Deal Distillery",
+      "menuUrl": "https://newdealdistillery.com/",
+      "website": "https://newdealdistillery.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:24.394Z",
-    "rawTextLength": 1289,
-    "contentHash": "4be086097fe94bf08893626384b7606616551d7fc875d79bbfb5c07b8d4f363f",
-    "sourceAttribution": "Website menu at dougfirlounge.com/, fetched 2026-02-28"
+    "scrapedAt": "2026-02-28T20:38:08.588Z",
+    "rawTextLength": 4735,
+    "contentHash": "f54414393b3ce8b77e41f76bb88ef6124cda0acc37b4d1bac63b787e9ef7c6ff",
+    "sourceAttribution": "Website menu at newdealdistillery.com/, fetched 2026-02-28"
   },
   {
     "bar": {
-      "name": "Horse Brass Pub",
-      "menuUrl": "https://horsebrass.com/menu/",
-      "website": "https://horsebrass.com"
+      "id": "ad2e4228-79ee-4180-b8af-5518911f4265",
+      "name": "The Green Room",
+      "menuUrl": "https://mwlpdx.com/the-green-room/",
+      "website": "https://mwlpdx.com/the-green-room/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:28.647Z",
-    "rawTextLength": 72,
-    "contentHash": "c7edfdbd90b3d22ebb292516fc09932db8a1d5f412f8322861d1ee7cc92d6ebc",
-    "sourceAttribution": "Website menu at horsebrass.com/menu/, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Expatriate",
-      "menuUrl": "http://expatriatepdx.com/cocktails",
-      "website": "http://expatriatepdx.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:32.231Z",
-    "rawTextLength": 1451,
-    "contentHash": "d06ff914f78982ebca6019251637f754a97834b2e029a5441671c353bb37b49e",
-    "sourceAttribution": "Website menu at expatriatepdx.com/cocktails, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Shift Drinks",
-      "menuUrl": "https://shiftdrinkspdx.com/",
-      "website": "https://shiftdrinkspdx.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:35.830Z",
-    "rawTextLength": 7031,
-    "contentHash": "24f430a2292b7e49c5c62d7a9f297e451806bef694124290824abe2ad7b4344c",
-    "sourceAttribution": "Website menu at shiftdrinkspdx.com/, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Luc Lac",
-      "menuUrl": "https://luclackitchen.com/",
-      "website": "https://luclackitchen.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:39.248Z",
-    "rawTextLength": 11080,
-    "contentHash": "69f8c7342a6e07a25eb6c52b537370757f2029234bde0810e5a59c2fe46b1d24",
-    "sourceAttribution": "Website menu at luclackitchen.com/, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Raven & Rose",
-      "menuUrl": "https://www.ravenandrosepdx.com/",
-      "website": "https://www.ravenandrosepdx.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:31:43.711Z",
-    "rawTextLength": 77,
-    "contentHash": "62946996c0c745734d39c85405ea1e81f212514f16c2b22ae9e5b6f58091c903",
-    "sourceAttribution": "Website menu at ravenandrosepdx.com/, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Kachka",
-      "menuUrl": "https://www.kachkapdx.com/drink-menu",
-      "website": "https://www.kachkapdx.com"
-    },
-    "whiskeys": [
-      {
-        "name": "Absolute Elyx",
-        "distillery": "Absolut",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 10,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Sweden. Priced at $10/$20/$30 for 30g/60g/100g."
-      },
-      {
-        "name": "Beluga Allure",
-        "distillery": "Beluga",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 15,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $15/$30/$45 for 30g/60g/100g."
-      },
-      {
-        "name": "Beluga Gold",
-        "distillery": "Beluga",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 22,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $22/$44/$66 for 30g/60g/100g."
-      },
-      {
-        "name": "Beluga Noble",
-        "distillery": "Beluga",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 9,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $9/$18/$27 for 30g/60g/100g."
-      },
-      {
-        "name": "Beluga Transatlantic",
-        "distillery": "Beluga",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $12/$24/$36 for 30g/60g/100g."
-      },
-      {
-        "name": "Bomond",
-        "distillery": "Bomond",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. France. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Boru",
-        "distillery": "Boru",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Ireland. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Ciroc",
-        "distillery": "Ciroc",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. France. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Crystal Head Onyx",
-        "distillery": "Crystal Head",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 14,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Canada. Priced at $14/$28/$42 for 30g/60g/100g."
-      },
-      {
-        "name": "Double Cross",
-        "distillery": "Double Cross",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 11,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Slovakia. Priced at $11/$22/$33 for 30g/60g/100g."
-      },
-      {
-        "name": "Haku",
-        "distillery": "Suntory",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 8,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Japan. Priced at $8/$16/$24 for 30g/60g/100g."
-      },
-      {
-        "name": "Hven",
-        "distillery": "Spirit of Hven",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Sweden. Priced at $12/$24/$36 for 30g/60g/100g."
-      },
-      {
-        "name": "Jean Marc XO",
-        "distillery": "Jean Marc",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 18,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. France. Priced at $18/$36/$54 for 30g/60g/100g."
-      },
-      {
-        "name": "Kástra Elión",
-        "distillery": "Kástra Elión",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Greece. Priced at $12/$24/$36 for 30g/60g/100g."
-      },
-      {
-        "name": "Katla",
-        "distillery": "Katla",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 14,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Iceland. Priced at $14/$28/$42 for 30g/60g/100g."
-      },
-      {
-        "name": "Ketel One",
-        "distillery": "Ketel One",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Netherlands. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Kissui",
-        "distillery": "Kissui",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 9,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Japan. Priced at $9/$18/$27 for 30g/60g/100g."
-      },
-      {
-        "name": "Minke",
-        "distillery": "Minke",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 8,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Ireland. Priced at $8/$16/$24 for 30g/60g/100g."
-      },
-      {
-        "name": "Nemiroff",
-        "distillery": "Nemiroff",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 7,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Ukraine. Priced at $7/$14/$21 for 30g/60g/100g."
-      },
-      {
-        "name": "Nemiroff 'Honey Pepper'",
-        "distillery": "Nemiroff",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 8,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Ukraine. Priced at $8/$16/$24 for 30g/60g/100g."
-      },
-      {
-        "name": "Nikka Coffey",
-        "distillery": "Nikka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Japan. Priced at $12/$24/$36 for 30g/60g/100g."
-      },
-      {
-        "name": "Polugar No. 1",
-        "distillery": "Polugar",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 14,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka/rye bread wine. Poland. Priced at $14/$28/$42 for 30g/60g/100g."
-      },
-      {
-        "name": "Polugar Wheat",
-        "distillery": "Polugar",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 18,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka/wheat bread wine. Poland. Priced at $18/$36/$54 for 30g/60g/100g."
-      },
-      {
-        "name": "Purity",
-        "distillery": "Purity",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Sweden. Priced at $12/$24/$36 for 30g/60g/100g."
-      },
-      {
-        "name": "Quicksilver",
-        "distillery": "Quicksilver",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Montana, USA. Priced at $12/$24/$36 for 30g/60g/100g."
-      },
-      {
-        "name": "Reyka",
-        "distillery": "Reyka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Iceland. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Sash & Fritz",
-        "distillery": "Sash & Fritz",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 10,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Germany. Priced at $10/$20/$30 for 30g/60g/100g."
-      },
-      {
-        "name": "Stoli 100",
-        "distillery": "Stolichnaya",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Stoli Elit",
-        "distillery": "Stolichnaya",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 10,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $10/$20/$30 for 30g/60g/100g."
-      },
-      {
-        "name": "Stoli Gold",
-        "distillery": "Stolichnaya",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 8,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Latvia. Priced at $8/$16/$24 for 30g/60g/100g."
-      },
-      {
-        "name": "Tenjaku",
-        "distillery": "Tenjaku",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 8,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Japan. Priced at $8/$16/$24 for 30g/60g/100g."
-      },
-      {
-        "name": "Tom of Finland",
-        "distillery": "Tom of Finland",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 10,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Finland. Priced at $10/$20/$30 for 30g/60g/100g."
-      },
-      {
-        "name": "Two James '28 Island'",
-        "distillery": "Two James Spirits",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 9,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Michigan, USA. Priced at $9/$18/$27 for 30g/60g/100g."
-      },
-      {
-        "name": "Double Circle",
-        "distillery": "Double Circle",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 7,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Portland, OR. Priced at $7/$14/$21 for 30g/60g/100g."
-      },
-      {
-        "name": "Fete",
-        "distillery": "Fete",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 7,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Eugene, OR. Priced at $7/$14/$21 for 30g/60g/100g."
-      },
-      {
-        "name": "Kachka Classic Vodka",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Portland, OR. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Medoyeff",
-        "distillery": "Medoyeff",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Portland, OR. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "New Deal",
-        "distillery": "New Deal Distillery",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Portland, OR. Priced at $6/$12/$21 for 30g/60g/100g."
-      },
-      {
-        "name": "Rolling River",
-        "distillery": "Rolling River Spirits",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Portland, OR. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Silverton",
-        "distillery": "Silverton",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Silverton, OR. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Timberline",
-        "distillery": "Timberline",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 6,
-        "pour_size": "30g/60g/100g",
-        "notes": "Vodka. Hood River, OR. Priced at $6/$12/$18 for 30g/60g/100g."
-      },
-      {
-        "name": "Bergamot Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Birch Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Cacao Nib Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Caraway Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Earl Grey Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Horseradish Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Pertsovka Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion (pepper). Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Klyukva Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion (cranberry). Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Sour Cherry Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion. Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Zubrovka Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 5,
-        "pour_size": "30g/60g/100g",
-        "notes": "House vodka infusion (bison grass). Priced at $5/$10/$15 for 30g/60g/100g."
-      },
-      {
-        "name": "Beet Fernet Infusion",
-        "distillery": "Kachka",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 10,
-        "pour_size": "30g/60g/100g",
-        "notes": "House infusion. Priced at $10/$20/$30 for 30g/60g/100g."
-      },
-      {
-        "name": "Cognac Park VSOP",
-        "distillery": "Cognac Park",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 16,
-        "pour_size": "30g/60g/100g",
-        "notes": "Cognac/brandy. France. Priced at $16/$32/$48 for 30g/60g/100g."
-      },
-      {
-        "name": "Courvoisier VSOP",
-        "distillery": "Courvoisier",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 12,
-        "pour_size": "30g/60g/100g",
-        "notes": "Cognac/brandy. France. Priced at $12/$24/$48 for 30g/60g/100g."
-      },
-      {
-        "name": "Hennessey VSOP Privilège",
-        "distillery": "Hennessy",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 16,
-        "pour_size": "30g/60g/100g",
-        "notes": "Cognac/brandy. France. Priced at $16/$32/$48 for 30g/60g/100g."
-      },
-      {
-        "name": "Hine VSOP",
-        "distillery": "Hine",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 16,
-        "pour_size": "30g/60g/100g",
-        "notes": "Cognac/brandy. France. Priced at $16/$32/$48 for 30g/60g/100g."
-      },
-      {
-        "name": "Meukow VS",
-        "distillery": "Meukow",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 8,
-        "pour_size": "30g/60g/100g",
-        "notes": "Cognac/brandy. France. Priced at $8/$16/$24 for 30g/60g/100g."
-      },
-      {
-        "name": "R. Jelinek Apricot Brandy",
-        "distillery": "R. Jelinek",
-        "type": "other",
-        "age": null,
-        "abv": null,
-        "price": 10,
-        "pour_size": "30g/60g/100g",
-        "notes": "Brandy. Czech Republic. Priced at $10/$20/$30 for 30g/60g/100g."
-      },
-      {
-        "name": "R. Jelinek Reserve 15 Year",
-        "distillery": "R. Jelinek",
-        "type": "other",
-        "age": 15,
-        "abv": null,
-        "price": 40,
-        "pour_size": "30g/60g/100g",
-        "notes": "Brandy. Czech Republic. Priced at $40/$80/$120 for 30g/60g/100g."
-      }
-    ],
-    "scrapedAt": "2026-02-28T19:32:43.715Z",
-    "rawTextLength": 18953,
-    "contentHash": "aaf92bb04a91ec64b362b4380d32b276276d8a23350ae1c08faf698ba280a197",
-    "sourceAttribution": "Website menu at kachkapdx.com/drink-menu, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Bit House Saloon",
-      "menuUrl": "https://www.bithousesaloon.com/",
-      "website": "https://www.bithousesaloon.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:32:51.013Z",
-    "rawTextLength": 0,
+    "scrapedAt": "2026-02-28T20:38:11.304Z",
+    "rawTextLength": 21,
     "contentHash": null,
     "sourceAttribution": null,
-    "error": "fetch failed"
+    "error": "Page returned too little content"
   },
   {
     "bar": {
-      "name": "Victoria Bar",
-      "menuUrl": "https://victoriapdx.com/menu/",
-      "website": "https://victoriapdx.com"
+      "id": "e2c6af98-c4bc-4cd2-a3eb-0fea4a9d10b2",
+      "name": "Fools and horses",
+      "menuUrl": "http://foolsandhorsespdx.com/",
+      "website": "http://foolsandhorsespdx.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:32:55.062Z",
-    "rawTextLength": 480,
-    "contentHash": "d14a96cb2ce1f7394cda2563a1d648c41073ecb7a287db443e5aa6ea2715eb40",
-    "sourceAttribution": "Website menu at victoriapdx.com/menu/, fetched 2026-02-28"
-  },
-  {
-    "bar": {
-      "name": "Park Avenue Fine Spirits",
-      "menuUrl": "https://www.parkavenuefinespirits.com/",
-      "website": "https://www.parkavenuefinespirits.com"
-    },
-    "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:33:02.118Z",
-    "rawTextLength": 0,
+    "scrapedAt": "2026-02-28T20:38:12.502Z",
+    "rawTextLength": 16,
     "contentHash": null,
     "sourceAttribution": null,
-    "error": "fetch failed"
+    "error": "Page returned too little content"
   },
   {
     "bar": {
-      "name": "Stag PDX",
-      "menuUrl": "https://www.stagportland.com/",
-      "website": "https://www.stagportland.com"
+      "id": "aad827c3-0b3e-4552-a80e-d69f0ede1e6a",
+      "name": "Dirty Pretty",
+      "menuUrl": "https://dirtyprettypdx.com/",
+      "website": "https://dirtyprettypdx.com/"
     },
     "whiskeys": [],
-    "scrapedAt": "2026-02-28T19:33:04.452Z",
+    "scrapedAt": "2026-02-28T20:38:13.306Z",
+    "rawTextLength": 12,
+    "contentHash": null,
+    "sourceAttribution": null,
+    "error": "Page returned too little content"
+  },
+  {
+    "bar": {
+      "id": "ef834aa8-b024-4466-baae-6c9309157e93",
+      "name": "RedRoom, Whiskey & Cocktail Bar at Bethany Village",
+      "menuUrl": "http://www.redroompdx.com/",
+      "website": "http://www.redroompdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:14.192Z",
+    "rawTextLength": 796,
+    "contentHash": "53f01485a5056c2ca0cfd83c8f3cbdb73f8c7a4183af5ed95b78f1afdd3f7dd2",
+    "sourceAttribution": "Website menu at redroompdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "0faa687c-919f-44c6-87ea-19fed1882e27",
+      "name": "Aviation American Gin",
+      "menuUrl": "http://www.aviationgin.com/",
+      "website": "http://www.aviationgin.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:17.200Z",
+    "rawTextLength": 2334,
+    "contentHash": "9bb3797a6a228186c101000ad55461f55c783c4dedd8044ab5f97e7004acfee1",
+    "sourceAttribution": "Website menu at aviationgin.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "30e65881-6ca4-4f91-9e16-d421fb6ffad2",
+      "name": "503 Distilling",
+      "menuUrl": "http://www.503distilling.com/",
+      "website": "http://www.503distilling.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:24.103Z",
+    "rawTextLength": 7301,
+    "contentHash": "e895b723734cbb5ff8037af5a490b5998da32c0aede9696fd72a0dd1a3526703",
+    "sourceAttribution": "Website menu at 503distilling.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "675bc44d-8bc3-46a9-a6ad-22c7354a3fa1",
+      "name": "Wild Roots",
+      "menuUrl": "http://www.wildrootsspirits.com/",
+      "website": "http://www.wildrootsspirits.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:27.607Z",
+    "rawTextLength": 244,
+    "contentHash": "f044536cb11d85c828d0f7c78ef0fa4f91dbf39726c0525995ab1e396bed42bb",
+    "sourceAttribution": "Website menu at wildrootsspirits.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "09d5f532-f3d3-4cda-b384-2a83ded332d0",
+      "name": "Whiskey Barrel Lounge",
+      "menuUrl": "https://whiskeybarrellounge.com/",
+      "website": "https://whiskeybarrellounge.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:31.226Z",
+    "rawTextLength": 2032,
+    "contentHash": "50da6b1594f2eb1865d40a2b8cd18667b3a6a504e108898d356b89f03a2d8c9a",
+    "sourceAttribution": "Website menu at whiskeybarrellounge.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "0f58943a-fe25-45bf-b0c3-6ec7e58454d0",
+      "name": "The Westgate Bourbon Bar & Taphouse",
+      "menuUrl": "http://thewestgatepdx.com/",
+      "website": "http://thewestgatepdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:34.958Z",
+    "rawTextLength": 1736,
+    "contentHash": "cc20e87bfe55653bc80f4d62d37626ef4a31fa1c972499558827ada2d16a12ba",
+    "sourceAttribution": "Website menu at thewestgatepdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "8204a47c-02a5-41b6-bf3b-e53af9ad1dcf",
+      "name": "Proof•Reader Whiskey + Craft + Kitchen, Restaurant & Bar",
+      "menuUrl": "https://www.marriott.com/en-us/hotels/pdxor-portland-marriott-downtown-waterfront/dining/",
+      "website": "https://www.marriott.com/en-us/hotels/pdxor-portland-marriott-downtown-waterfront/dining/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:37.907Z",
+    "rawTextLength": 768,
+    "contentHash": "d88f6460f8a555b7edf121305f8ab3bcb4b9ed26ec2901477224ff16b4c0dbce",
+    "sourceAttribution": "Website menu at marriott.com/en-us/hotels/pdxor-portland-marriott-downtown-waterfront/dining/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "c9829846-e718-4e4c-b6bd-b77dccac1c8f",
+      "name": "MALPRACTICE",
+      "menuUrl": "https://malpracticepdx.com/",
+      "website": "https://malpracticepdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:41.042Z",
+    "rawTextLength": 1741,
+    "contentHash": "0810527a034865fb58872dceb2b34414184e2509d867799cb688d4cf57e648ed",
+    "sourceAttribution": "Website menu at malpracticepdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "6bb62823-ab85-4b30-b372-1dcc5564ec65",
+      "name": "Bird Creek Distillery",
+      "menuUrl": "http://birdcreekwhiskey.com/",
+      "website": "http://birdcreekwhiskey.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:44.566Z",
+    "rawTextLength": 1614,
+    "contentHash": "432f22d2140ea8e129b7025cd73910e748932cc65257897a60ff092ee76a27ca",
+    "sourceAttribution": "Website menu at birdcreekwhiskey.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "24806957-f9f6-4c21-b74d-e564278c68cd",
+      "name": "Martin Ryan Distilling Co.",
+      "menuUrl": "http://www.ariagin.com/",
+      "website": "http://www.ariagin.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:47.028Z",
     "rawTextLength": 0,
     "contentHash": null,
     "sourceAttribution": null,
     "error": "Page returned too little content"
+  },
+  {
+    "bar": {
+      "id": "20881047-0132-40d8-bd6e-18249b2ec639",
+      "name": "Fabrika: Kachka Distillery & Zakuski Bar",
+      "menuUrl": "http://www.kachkafabrika.com/",
+      "website": "http://www.kachkafabrika.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:48.669Z",
+    "rawTextLength": 710,
+    "contentHash": "079295d9618c693475999aba4a85af0e7664f18557da0bcadfc080094e2211b7",
+    "sourceAttribution": "Website menu at kachkafabrika.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "e3ff3aac-c0f2-4687-b03b-1b39e76cbb76",
+      "name": "Sip City Spirits + Wine + Beer (Uptown)",
+      "menuUrl": "http://sipcityspirits.com/",
+      "website": "http://sipcityspirits.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:51.923Z",
+    "rawTextLength": 4680,
+    "contentHash": "e420069cc5fb36ffdfe25e0491efc5df587c808f64fa735b9509e0e9396a097c",
+    "sourceAttribution": "Website menu at sipcityspirits.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "2b9cc432-abbe-4bf7-b3d2-5ed1c111b957",
+      "name": "The Civic Taproom and Bottle Shop",
+      "menuUrl": "https://www.thecivictaproom.com/",
+      "website": "https://www.thecivictaproom.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:38:56.525Z",
+    "rawTextLength": 106,
+    "contentHash": "872504042db587a05e391a873aab8b226561a9091dc7bdd4ee1108f5db2dc088",
+    "sourceAttribution": "Website menu at thecivictaproom.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "08196961-25fc-435b-b42d-19aa7e0ced98",
+      "name": "Secret Grove",
+      "menuUrl": "https://secretgrovecollective.com/",
+      "website": "https://secretgrovecollective.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:01.291Z",
+    "rawTextLength": 1885,
+    "contentHash": "9999422872700ff028954199a1a18801ba1d7b2641552d7edb1be00e157e3e45",
+    "sourceAttribution": "Website menu at secretgrovecollective.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "8825fe08-5604-423d-b2e9-0cba91daa436",
+      "name": "Voysey",
+      "menuUrl": "http://www.voyseypdx.com/",
+      "website": "http://www.voyseypdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:03.685Z",
+    "rawTextLength": 0,
+    "contentHash": null,
+    "sourceAttribution": null,
+    "error": "Page returned too little content"
+  },
+  {
+    "bar": {
+      "id": "57b2bcf3-e528-4ba5-b6ca-82bb10948123",
+      "name": "Speakeasy Saloon",
+      "menuUrl": "https://www.speakeasysaloonpdx.com/",
+      "website": "https://www.speakeasysaloonpdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:05.058Z",
+    "rawTextLength": 361,
+    "contentHash": "70597aca00245cf63a5f4be370b40d662c63205b86efc7a1d4a34f9221c4d7df",
+    "sourceAttribution": "Website menu at speakeasysaloonpdx.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "a59a27fc-0f25-4a0b-9908-8d6fd9b4eb27",
+      "name": "Grandma's Secret",
+      "menuUrl": "https://www.instagram.com/grandmassecretpdx/?hl=en",
+      "website": "https://www.instagram.com/grandmassecretpdx/?hl=en"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:08.195Z",
+    "rawTextLength": 67,
+    "contentHash": "37807f32fd7d9bde61d77bf25daf33a27b186f1c158977c276b4447789803ba7",
+    "sourceAttribution": "Website menu at instagram.com/grandmassecretpdx/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "ea645678-06bf-4e2b-87c2-2947bfecfce6",
+      "name": "Raven's Manor",
+      "menuUrl": "http://ravensmanorexperience.com/",
+      "website": "http://ravensmanorexperience.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:11.637Z",
+    "rawTextLength": 77,
+    "contentHash": "89107f6531703b101cfe60da54adf0fbcd03b10da7dd100c6311b1e1891f0d28",
+    "sourceAttribution": "Website menu at ravensmanorexperience.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "921a6589-721b-48e6-a954-a1c10747687a",
+      "name": "Spirit of 77",
+      "menuUrl": "http://www.spiritof77bar.com/?utm_source=google-gmb-maps&utm_medium=gmb-website-button&utm_campaign=locl.io&utm_content=2f344349-6bfc-43f3-9ad5-728bba94bb65",
+      "website": "http://www.spiritof77bar.com/?utm_source=google-gmb-maps&utm_medium=gmb-website-button&utm_campaign=locl.io&utm_content=2f344349-6bfc-43f3-9ad5-728bba94bb65"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:14.883Z",
+    "rawTextLength": 1304,
+    "contentHash": "6ffbd9f3eb71ca842ad86b44c32b69f289386cfdfd8d7cb6c56775b5b376ec92",
+    "sourceAttribution": "Website menu at spiritof77bar.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "452732c6-b477-4ff7-8d09-4a961556f303",
+      "name": "2NW5",
+      "menuUrl": "https://thehoxton.com/portland/2nw5-basement-bar/",
+      "website": "https://thehoxton.com/portland/2nw5-basement-bar/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:17.669Z",
+    "rawTextLength": 105,
+    "contentHash": "68c3fadea5b143d066b4f31ebf32abe4f94b37cb906278d8332770a203c5c8d3",
+    "sourceAttribution": "Website menu at thehoxton.com/portland/2nw5-basement-bar/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "6d1e3aee-48b4-49fd-9a10-b6e20b2ac9d6",
+      "name": "RIVERSIDE TAPROOM",
+      "menuUrl": "https://www.riversidetaprooms.com/",
+      "website": "https://www.riversidetaprooms.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:21.099Z",
+    "rawTextLength": 166,
+    "contentHash": "51e70d3209cdc54fc52dd320b64315e55820adc2b2cafef7b7decd298f589c48",
+    "sourceAttribution": "Website menu at riversidetaprooms.com/, fetched 2026-02-28"
+  },
+  {
+    "bar": {
+      "id": "dbd366e7-41e2-4fe7-b003-412b0d63f89b",
+      "name": "Speakeasy Tavern",
+      "menuUrl": "http://gils-speakeasy.com/",
+      "website": "http://gils-speakeasy.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:23.322Z",
+    "rawTextLength": 15,
+    "contentHash": null,
+    "sourceAttribution": null,
+    "error": "Page returned too little content"
+  },
+  {
+    "bar": {
+      "id": "dfa4c772-4476-4751-89d7-ee023f4f0233",
+      "name": "Sugar Hill",
+      "menuUrl": "http://sugarhillpdx.com/",
+      "website": "http://sugarhillpdx.com/"
+    },
+    "whiskeys": [],
+    "scrapedAt": "2026-02-28T20:39:24.733Z",
+    "rawTextLength": 594,
+    "contentHash": "da66020ae73368a78d69ae223015aac376ff7457a84323603652ff488fb9ec12",
+    "sourceAttribution": "Website menu at sugarhillpdx.com/, fetched 2026-02-28"
   }
 ]

@@ -34,14 +34,28 @@ Rules:
 - Classify type based on name/origin clues
 - If the content has no whiskey items, return an empty list`;
 
-export const VISION_EXTRACTION_SYSTEM = `You are a whiskey menu extraction expert. You are looking at an image of a bar menu or drink list. Extract all whiskey/whisky/bourbon/scotch/rye entries visible in the image.
+export const VISION_EXTRACTION_SYSTEM = `You are a whiskey extraction expert. You are looking at a photo from a bar or restaurant. The image may be:
+1. A MENU or drink list — extract all whiskey/spirit entries with prices and details
+2. A BACK BAR or SHELF photo — identify bottles visible on shelves behind the bar
+3. A WHISKEY WALL or DISPLAY — identify whiskeys in display cases or bottle walls
 
 Rules:
-- Extract ONLY whiskey/whisky spirits (not beer, wine, cocktails, or food)
-- Read prices carefully from the image
-- Parse age statements when visible
+- Extract ONLY whiskey/whisky/bourbon/scotch/rye spirits (not beer, wine, cocktails, or food)
+- For menu photos: read prices, age statements, and pour sizes carefully
+- For shelf/backbar photos: identify bottles by label — include distillery and type when recognizable
+- For display photos: identify bottles by label, shelf position, or signage
 - If text is blurry or partially obscured, make your best guess and note uncertainty
 - Return an empty list if no whiskey items are visible`;
+
+export const REVIEW_EXTRACTION_SYSTEM = `You are a whiskey identification expert. Given Google Reviews text for a bar, extract any specific whiskey brand/expression names mentioned by reviewers.
+
+Rules:
+- Extract ONLY specific brand names and expressions (e.g., "Lagavulin 16", "Buffalo Trace", "Pappy Van Winkle")
+- Do NOT extract generic references like "great whiskey selection", "nice bourbon list", "good scotch"
+- Do NOT extract cocktail names unless they clearly name a specific whiskey (e.g., "Old Fashioned with Woodford Reserve")
+- Classify type when possible: bourbon, scotch, irish, rye, japanese, canadian, single_malt, blended, other
+- Include brief context quote from the review
+- Return an empty list if no specific brands are mentioned`;
 
 export const DEDUP_JUDGE_SYSTEM = `You are a whiskey identification expert. Given two whiskey names, determine if they refer to the same whiskey product. Consider:
 - Spelling variations (e.g., "whisky" vs "whiskey")

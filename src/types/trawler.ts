@@ -13,7 +13,7 @@ export interface ExtractedMenu {
   bar_name?: string;
   whiskeys: ExtractedWhiskey[];
   source_url?: string;
-  extraction_method: 'text' | 'vision';
+  extraction_method: 'text' | 'vision' | 'review';
   confidence: number;
   source_date?: string;
   scraped_at?: string;

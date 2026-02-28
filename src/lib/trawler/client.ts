@@ -12,7 +12,7 @@ export function getAnthropicClient(): Anthropic {
 }
 
 export const MODELS = {
-  TEXT_EXTRACTION: 'claude-haiku-4-5-20251001',
+  TEXT_EXTRACTION: 'claude-sonnet-4-6',
   VISION_EXTRACTION: 'claude-sonnet-4-6',
   DEDUP_JUDGE: 'claude-haiku-4-5-20251001',
 } as const;

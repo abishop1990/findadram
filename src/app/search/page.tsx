@@ -14,6 +14,7 @@ export default async function SearchPage({
   const type: SearchType = (params.type === 'bar' ? 'bar' : 'whiskey');
   const lat = params.lat ? parseFloat(params.lat) : undefined;
   const lng = params.lng ? parseFloat(params.lng) : undefined;
+  const hasCoordinates = lat !== undefined && lng !== undefined;
 
   const supabase = await createServerSupabaseClient();
 
@@ -37,22 +38,28 @@ export default async function SearchPage({
   }
 
   const hasResults = type === 'bar' ? barResults.length > 0 : whiskeyResults.length > 0;
+  const resultCount = type === 'bar' ? barResults.length : whiskeyResults.length;
 
   return (
     <div className="min-h-screen bg-whiskey-50">
       {/* Search Header Section */}
-      <section className="bg-gradient-to-br from-whiskey-950 via-whiskey-900 to-whiskey-800 py-12">
+      <section className="bg-gradient-to-br from-whiskey-950 via-whiskey-900 to-whiskey-800 py-8">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="mb-6 flex justify-center">
+          <div className="mb-4 flex justify-center">
             <SearchBar defaultQuery={q} defaultType={type} />
           </div>
 
           {q && (
-            <p className="text-center text-sm text-amber-400 font-medium">
-              {type === 'bar'
-                ? `${barResults.length} bars found for "${q}"`
-                : `${whiskeyResults.length} whiskeys found for "${q}"`}
-            </p>
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-center text-sm font-semibold text-whiskey-100">
+                Found {resultCount} {type === 'bar' ? 'bar' : 'whiskey'}{resultCount !== 1 ? 's' : ''} matching &quot;{q}&quot;
+              </p>
+              {hasCoordinates && (
+                <p className="text-center text-xs text-oak-300 flex items-center gap-1">
+                  <span>📍</span> Searching nearby area
+                </p>
+              )}
+            </div>
           )}
         </div>
       </section>
@@ -60,25 +67,38 @@ export default async function SearchPage({
       {/* Results Section */}
       <section className="mx-auto max-w-6xl px-4 py-12">
         {!hasResults && q && (
-          <div className="text-center py-12">
-            <p className="text-lg text-whiskey-800">No {type === 'bar' ? 'bars' : 'whiskeys'} found for &quot;{q}&quot;</p>
-            <p className="text-sm text-whiskey-600 mt-2">Try a different search term or broaden your location radius.</p>
+          <div className="rounded-lg border border-oak-300 bg-oak-50 p-8 text-center">
+            <p className="text-lg font-semibold text-whiskey-900">
+              No {type === 'bar' ? 'bars' : 'whiskeys'} found for &quot;{q}&quot;
+            </p>
+            <p className="mt-3 text-sm text-whiskey-700">
+              Try searching with different terms, or submit a menu from your favorite spot to help us grow our database.
+            </p>
+            <p className="mt-2 text-xs text-whiskey-600">
+              {hasCoordinates ? 'Adjust your location or expand the search radius.' : 'Enable location access to search nearby areas.'}
+            </p>
           </div>
         )}
 
         {!q && (
-          <div className="text-center py-12">
-            <p className="text-lg text-whiskey-800">Enter a search term to find {type === 'bar' ? 'bars' : 'whiskeys'}</p>
+          <div className="rounded-lg border border-oak-300 bg-oak-50 p-8 text-center">
+            <p className="text-lg font-semibold text-whiskey-900">
+              Start searching for {type === 'bar' ? 'bars' : 'whiskeys'}
+            </p>
+            <p className="mt-2 text-sm text-whiskey-700">
+              Use the search bar above to find {type === 'bar' ? 'bars' : 'whiskeys'} near you or across the country.
+            </p>
           </div>
         )}
 
         {hasResults && (
           <>
-            <h2 className="text-2xl font-bold text-whiskey-900 mb-6 flex items-center gap-2">
-              <span className="text-amber-500">🥃</span>
-              {type === 'bar' ? 'Bars' : 'Whiskeys'}
+            <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-whiskey-900">
+              <span className="text-whiskey-500">🥃</span>
+              <span>{type === 'bar' ? 'Bars' : 'Whiskeys'}</span>
+              <span className="text-sm font-normal text-oak-600">({resultCount})</span>
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {type === 'bar' &&
                 barResults.map((bar) => (
                   <BarCard

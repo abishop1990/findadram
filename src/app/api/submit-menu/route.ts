@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { crawlUrl, extractFromText, extractFromImage } from '@/lib/trawler';
+import { validateUrl } from '@/lib/trawler/safety';
+
+const VALID_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
+type ValidImageMime = typeof VALID_IMAGE_MIMES[number];
+const MAX_IMAGE_SIZE = 25 * 1024 * 1024; // 25MB
 
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get('content-type') || '';
@@ -19,6 +24,9 @@ export async function POST(request: NextRequest) {
     const file = formData.get('image') as File | null;
 
     if (file) {
+      if (file.size > MAX_IMAGE_SIZE) {
+        return NextResponse.json({ error: 'Image too large (max 25MB)' }, { status: 413 });
+      }
       const bytes = await file.arrayBuffer();
       image = Buffer.from(bytes).toString('base64');
       imageMimeType = file.type;
@@ -29,6 +37,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Provide either a URL or an image' }, { status: 400 });
   }
 
+  // Validate URL before crawling (SSRF prevention)
+  if (url) {
+    const urlCheck = await validateUrl(url);
+    if (!urlCheck.valid) {
+      return NextResponse.json({ error: `URL blocked: ${urlCheck.reason}` }, { status: 400 });
+    }
+  }
+
+  // Validate image mime type
+  if (imageMimeType && !VALID_IMAGE_MIMES.includes(imageMimeType as ValidImageMime)) {
+    return NextResponse.json({ error: 'Invalid image mime type' }, { status: 400 });
+  }
+
   try {
     let menu;
 
@@ -37,10 +58,10 @@ export async function POST(request: NextRequest) {
       menu = await extractFromText(html);
       menu.source_url = url;
     } else if (image) {
-      menu = await extractFromImage(
-        image,
-        (imageMimeType || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
-      );
+      const mime: ValidImageMime = VALID_IMAGE_MIMES.includes(imageMimeType as ValidImageMime)
+        ? (imageMimeType as ValidImageMime)
+        : 'image/jpeg';
+      menu = await extractFromImage(image, mime);
     } else {
       return NextResponse.json({ error: 'No content to process' }, { status: 400 });
     }

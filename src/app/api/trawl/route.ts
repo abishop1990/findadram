@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { crawlUrl, extractFromText, extractFromImage, ingestMenu } from '@/lib/trawler';
+import { validateUrl } from '@/lib/trawler/safety';
+
+const VALID_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
+type ValidImageMime = typeof VALID_IMAGE_MIMES[number];
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,6 +16,19 @@ export async function POST(request: NextRequest) {
 
   if (!bar_id) {
     return NextResponse.json({ error: 'bar_id is required' }, { status: 400 });
+  }
+
+  // Validate URL before crawling (SSRF prevention)
+  if (url) {
+    const urlCheck = await validateUrl(url);
+    if (!urlCheck.valid) {
+      return NextResponse.json({ error: `URL blocked: ${urlCheck.reason}` }, { status: 400 });
+    }
+  }
+
+  // Validate image mime type
+  if (image && image_mime_type && !VALID_IMAGE_MIMES.includes(image_mime_type)) {
+    return NextResponse.json({ error: 'Invalid image mime type' }, { status: 400 });
   }
 
   const supabase = await createServerSupabaseClient();
@@ -43,10 +60,10 @@ export async function POST(request: NextRequest) {
       const html = await crawlUrl(url);
       menu = await extractFromText(html);
     } else {
-      menu = await extractFromImage(
-        image,
-        (image_mime_type || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
-      );
+      const mime: ValidImageMime = VALID_IMAGE_MIMES.includes(image_mime_type)
+        ? image_mime_type
+        : 'image/jpeg';
+      menu = await extractFromImage(image, mime);
     }
 
     menu.source_url = url;

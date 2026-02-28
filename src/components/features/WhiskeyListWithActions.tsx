@@ -47,6 +47,7 @@ export function WhiskeyListWithActions({
   barName: string;
 }) {
   const [sortBy, setSortBy] = useState<SortKey>('name');
+  const [filterQuery, setFilterQuery] = useState<string>('');
   const [sightingWhiskey, setSightingWhiskey] = useState<{ id: string; name: string } | null>(null);
 
   const sorted = useMemo(() => {
@@ -64,6 +65,17 @@ export function WhiskeyListWithActions({
     });
   }, [whiskeys, sortBy]);
 
+  const filtered = useMemo(() => {
+    if (!filterQuery.trim()) return sorted;
+    const query = filterQuery.toLowerCase();
+    return sorted.filter((entry) => {
+      const name = entry.whiskey.name.toLowerCase();
+      const distillery = (entry.whiskey.distillery || '').toLowerCase();
+      const type = (entry.whiskey.type || '').toLowerCase();
+      return name.includes(query) || distillery.includes(query) || type.includes(query);
+    });
+  }, [sorted, filterQuery]);
+
   if (whiskeys.length === 0) {
     return (
       <div className="text-center py-8">
@@ -75,6 +87,17 @@ export function WhiskeyListWithActions({
 
   return (
     <div>
+      {/* Filter input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Filter whiskeys..."
+          value={filterQuery}
+          onChange={(e) => setFilterQuery(e.target.value)}
+          className="w-full px-3 py-2 text-whiskey-900 border border-oak-300 rounded-md focus:outline-none focus:ring-2 focus:ring-whiskey-500 focus:border-whiskey-500"
+        />
+      </div>
+
       {/* Sort controls */}
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-oak-100">
         <span className="text-sm text-oak-500">Sort:</span>
@@ -107,59 +130,76 @@ export function WhiskeyListWithActions({
         </div>
       )}
 
+      {/* Filter results info */}
+      {filterQuery.trim() && (
+        <div className="mb-3 text-xs text-oak-500">
+          Showing {filtered.length} of {whiskeys.length} whiskeys
+        </div>
+      )}
+
+      {/* No matches message */}
+      {filterQuery.trim() && filtered.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-oak-500">No matches found.</p>
+          <p className="text-oak-400 text-sm mt-1">Try adjusting your filter.</p>
+        </div>
+      )}
+
       {/* Whiskey list */}
-      <div className="divide-y divide-oak-100">
-        {sorted.map((entry) => (
-          <div key={entry.id} className="py-3 group">
-            <div className="flex items-start justify-between">
-              <div className="min-w-0 flex-1">
-                <Link
-                  href={`/whiskeys/${entry.whiskey.id}`}
-                  className="font-medium text-whiskey-900 hover:text-whiskey-600 transition-colors"
-                >
-                  {entry.whiskey.name}
-                </Link>
-                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                  {entry.whiskey.distillery && (
-                    <span className="text-xs text-oak-500">{entry.whiskey.distillery}</span>
-                  )}
-                  {entry.whiskey.type && entry.whiskey.type !== 'other' && (
-                    <Badge variant="default">{entry.whiskey.type.replace('_', ' ')}</Badge>
-                  )}
-                  {entry.whiskey.age && (
-                    <span className="text-xs text-oak-400">{entry.whiskey.age}yr</span>
-                  )}
-                  <span className="text-xs text-oak-300">Verified {timeAgo(entry.last_verified)}</span>
+      {filtered.length > 0 && (
+        <div className="divide-y divide-oak-100">
+          {filtered.map((entry) => (
+            <div key={entry.id} className="py-3 group">
+              <div className="flex items-start justify-between">
+                <div className="min-w-0 flex-1">
+                  <Link
+                    href={`/whiskeys/${entry.whiskey.id}`}
+                    className="font-medium text-whiskey-900 hover:text-whiskey-600 transition-colors"
+                  >
+                    {entry.whiskey.name}
+                  </Link>
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                    {entry.whiskey.distillery && (
+                      <span className="text-xs text-oak-500">{entry.whiskey.distillery}</span>
+                    )}
+                    {entry.whiskey.type && entry.whiskey.type !== 'other' && (
+                      <Badge variant="default">{entry.whiskey.type.replace('_', ' ')}</Badge>
+                    )}
+                    {entry.whiskey.age && (
+                      <span className="text-xs text-oak-400">{entry.whiskey.age}yr</span>
+                    )}
+                    <span className="text-xs text-oak-300">Verified {timeAgo(entry.last_verified)}</span>
+                  </div>
+
+                  {/* Confirmation buttons */}
+                  <div className="mt-1.5">
+                    <ConfirmationButtons
+                      barWhiskeyId={entry.id}
+                      whiskeyName={entry.whiskey.name}
+                      compact
+                    />
+                  </div>
                 </div>
 
-                {/* Confirmation buttons */}
-                <div className="mt-1.5">
-                  <ConfirmationButtons
-                    barWhiskeyId={entry.id}
-                    whiskeyName={entry.whiskey.name}
-                    compact
-                  />
+                <div className="text-right ml-4 shrink-0 flex flex-col items-end gap-1">
+                  {entry.price != null && (
+                    <p className="font-semibold text-whiskey-700">${entry.price.toFixed(2)}</p>
+                  )}
+                  {entry.pour_size && (
+                    <p className="text-xs text-oak-400">{entry.pour_size}</p>
+                  )}
+                  <button
+                    onClick={() => setSightingWhiskey({ id: entry.whiskey.id, name: entry.whiskey.name })}
+                    className="text-xs text-whiskey-500 hover:text-whiskey-400 opacity-0 group-hover:opacity-100 transition-opacity mt-1"
+                  >
+                    Log sighting
+                  </button>
                 </div>
-              </div>
-
-              <div className="text-right ml-4 shrink-0 flex flex-col items-end gap-1">
-                {entry.price != null && (
-                  <p className="font-semibold text-whiskey-700">${entry.price.toFixed(2)}</p>
-                )}
-                {entry.pour_size && (
-                  <p className="text-xs text-oak-400">{entry.pour_size}</p>
-                )}
-                <button
-                  onClick={() => setSightingWhiskey({ id: entry.whiskey.id, name: entry.whiskey.name })}
-                  className="text-xs text-whiskey-500 hover:text-whiskey-400 opacity-0 group-hover:opacity-100 transition-opacity mt-1"
-                >
-                  Log sighting
-                </button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

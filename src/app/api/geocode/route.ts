@@ -24,8 +24,14 @@ export async function GET(request: NextRequest) {
       // Forward geocode: address/place name -> coordinates
       url = `${NOMINATIM_BASE}/search?q=${encodeURIComponent(q)}&format=json&limit=5&addressdetails=1`;
     } else if (lat && lng) {
+      // Validate coordinate bounds
+      const latNum = parseFloat(lat);
+      const lngNum = parseFloat(lng);
+      if (!Number.isFinite(latNum) || !Number.isFinite(lngNum) || latNum < -90 || latNum > 90 || lngNum < -180 || lngNum > 180) {
+        return NextResponse.json({ error: 'Invalid coordinates' }, { status: 400 });
+      }
       // Reverse geocode: coordinates -> address
-      url = `${NOMINATIM_BASE}/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`;
+      url = `${NOMINATIM_BASE}/reverse?lat=${latNum}&lon=${lngNum}&format=json&addressdetails=1`;
     } else {
       return NextResponse.json({ error: 'Provide either q or lat/lng parameters' }, { status: 400 });
     }

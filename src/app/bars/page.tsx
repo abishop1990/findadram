@@ -7,7 +7,7 @@ export default async function BarsPage() {
 
   const { data: bars } = await supabase
     .from('bars')
-    .select('id, name, address, city, state')
+    .select('id, name, address, city, state, bar_whiskeys(count)')
     .order('name');
 
   return (
@@ -43,6 +43,7 @@ export default async function BarsPage() {
                   address={bar.address}
                   city={bar.city}
                   state={bar.state}
+                  whiskey_count={(bar.bar_whiskeys as unknown as { count: number }[])?.[0]?.count ?? 0}
                 />
               ))}
             </div>

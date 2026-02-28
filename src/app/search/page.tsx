@@ -80,10 +80,18 @@ export default async function SearchPage({
           </div>
         )}
 
-        {!q && (
+        {!q && hasResults && (
+          <div className="mb-6 rounded-lg border border-oak-200 bg-white px-5 py-3 text-center shadow-sm">
+            <p className="text-sm text-oak-600">
+              Showing all {resultCount} {type === 'bar' ? 'bar' : 'whiskey'}{resultCount !== 1 ? 's' : ''} — use the search bar above to filter
+            </p>
+          </div>
+        )}
+
+        {!q && !hasResults && (
           <div className="rounded-lg border border-oak-300 bg-oak-50 p-8 text-center">
             <p className="text-lg font-semibold text-whiskey-900">
-              Start searching for {type === 'bar' ? 'bars' : 'whiskeys'}
+              Explore our collection
             </p>
             <p className="mt-2 text-sm text-whiskey-700">
               Use the search bar above to find {type === 'bar' ? 'bars' : 'whiskeys'} near you or across the country.

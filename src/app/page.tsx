@@ -35,8 +35,8 @@ export default async function HomePage() {
   ] = await Promise.all([
     supabase
       .from('bars')
-      .select('id, name, address, city, state, whiskey_count')
-      .order('whiskey_count', { ascending: false })
+      .select('id, name, address, city, state, bar_whiskeys(count)')
+      .order('name', { ascending: true })
       .limit(6),
     supabase
       .from('whiskeys')
@@ -89,7 +89,7 @@ export default async function HomePage() {
         </svg>
       ),
     },
-  ];
+  ].filter(({ value }) => value > 0);
 
   return (
     <div className="min-h-screen bg-whiskey-50">
@@ -164,7 +164,7 @@ export default async function HomePage() {
       {/* ── Stats bar ─────────────────────────────────────────────────────── */}
       <section className="border-b border-oak-200 bg-white" aria-label="Platform statistics">
         <div className="mx-auto max-w-6xl px-4 py-6">
-          <dl className="grid grid-cols-3 divide-x divide-oak-200">
+          <dl className={`grid divide-x divide-oak-200 ${stats.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
             {stats.map(({ label, value, icon }) => (
               <div key={label} className="flex flex-col items-center gap-1 px-4 py-2 text-center">
                 <div className="text-whiskey-400 mb-1">{icon}</div>
@@ -292,17 +292,21 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {bars.map((bar) => (
-              <BarCard
-                key={bar.id}
-                id={bar.id}
-                name={bar.name}
-                address={bar.address}
-                city={bar.city}
-                state={bar.state}
-                whiskey_count={(bar as unknown as { whiskey_count?: number }).whiskey_count}
-              />
-            ))}
+            {bars.map((bar) => {
+              const bwRows = (bar as unknown as { bar_whiskeys?: { count: number }[] }).bar_whiskeys;
+              const whiskey_count = bwRows && bwRows.length > 0 ? Number(bwRows[0].count) : undefined;
+              return (
+                <BarCard
+                  key={bar.id}
+                  id={bar.id}
+                  name={bar.name}
+                  address={bar.address}
+                  city={bar.city}
+                  state={bar.state}
+                  whiskey_count={whiskey_count}
+                />
+              );
+            })}
           </div>
         </section>
       )}

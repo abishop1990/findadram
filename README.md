@@ -2,7 +2,7 @@
 
 **Whiskey discovery for Portland, OR.** Search bars near you, see what's on the shelf, track prices, and share discoveries with the community.
 
-> Built for the hackathon — 4-6 parallel AI agents collaborating via Claude Code.
+> Built for the hackathon — parallel AI agents collaborating via Claude Code.
 
 ## What It Does
 
@@ -99,4 +99,8 @@ npm run dev        # → http://localhost:3000
 
 ## How It Was Built
 
-This project was built by **4-6 parallel Claude Code agents**, each owning a domain (database, API, UI, geo, auth). Agents coordinate through file ownership boundaries and a shared collaboration protocol defined in `CLAUDE.md`. The trawler pipeline uses Claude's vision and text capabilities to extract structured data from unstructured bar menus.
+This project was built by **parallel Claude Code agents**, each owning a domain (database, API, UI, geo, auth). Agents coordinate through file ownership boundaries and a shared collaboration protocol defined in `CLAUDE.md`.
+
+An autonomous [**overseer**](https://github.com/abishop1990/claude-overseer) agent ran continuously alongside the domain agents — triaging the codebase, picking the highest-value next action, executing it, and committing. This kept the project moving forward without manual task assignment.
+
+The trawler pipeline uses Claude's vision and text capabilities to extract structured data from unstructured bar menus.

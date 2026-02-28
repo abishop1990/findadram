@@ -1,10 +1,10 @@
 const required = [
   'ANTHROPIC_API_KEY',
+  'NEXT_PUBLIC_SUPABASE_URL',
+  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
 ] as const;
 
 const optional = [
-  'NEXT_PUBLIC_SUPABASE_URL',
-  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
   'GOOGLE_PLACES_API_KEY',
 ] as const;
 

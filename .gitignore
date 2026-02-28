@@ -43,3 +43,6 @@ next-env.d.ts
 # script output files
 scripts/trawl-results.json
 scripts/trawl-summary.txt
+
+# screenshots
+.screenshots/

@@ -7,23 +7,6 @@
 // 1. Private barrel / store-pick detection
 // ---------------------------------------------------------------------------
 
-/**
- * Patterns that signal a private-barrel / store-pick designation.
- * The regex captures everything from the separator+keyword to end-of-string,
- * or parenthesised / bracketed pick blocks anywhere in the name.
- *
- * Examples handled:
- *   "Buffalo Trace — Scotch Lodge Private Barrel"
- *   "Knob Creek Single Barrel Select (Bible Club Pick)"
- *   "Weller 12 [Total Wine Single Barrel]"
- *   "Four Roses - Binny's Private Selection"
- */
-const PICK_INLINE_RE =
-  /\s*[\u2014\u2013\-\|]\s*.+?\b(private\s+barrel|private\s+selection|store\s+pick|single\s+barrel\s+select|barrel\s+pick|cask\s+select(?:ion)?)\b.*/i;
-
-const PICK_PAREN_RE =
-  /\s*[(\[].+?\b(pick|private|selection|barrel|select)\b.+?[)\]]/i;
-
 export interface PrivateBarrelResult {
   baseName: string;
   pickInfo: string | null;

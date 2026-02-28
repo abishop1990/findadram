@@ -79,11 +79,16 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
 
-    await supabase
+    const { error: updateError } = await supabase
       .from('trawl_jobs')
       .update({ status: 'failed', error: errorMessage })
       .eq('id', job.id);
 
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    if (updateError) {
+      console.error('Failed to update trawl job status:', updateError.message);
+    }
+
+    console.error('POST /api/trawl error:', errorMessage);
+    return NextResponse.json({ error: 'Trawl processing failed' }, { status: 500 });
   }
 }

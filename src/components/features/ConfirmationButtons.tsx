@@ -13,6 +13,7 @@ export function ConfirmationButtons({ barWhiskeyId, whiskeyName, compact = false
   const { sessionId } = useSession();
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState<'confirmed' | 'not_found' | null>(null);
+  const [submitError, setSubmitError] = useState(false);
   const [stats, setStats] = useState<{ confirmed: number; not_found: number } | null>(null);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export function ConfirmationButtons({ barWhiskeyId, whiskeyName, compact = false
   const handleConfirmation = async (status: 'confirmed' | 'not_found') => {
     if (!sessionId || loading) return;
     setLoading(true);
+    setSubmitError(false);
 
     try {
       const res = await fetch('/api/confirmations', {
@@ -41,9 +43,11 @@ export function ConfirmationButtons({ barWhiskeyId, whiskeyName, compact = false
 
       if (res.ok) {
         setSubmitted(status);
+      } else {
+        setSubmitError(true);
       }
     } catch {
-      // Silently fail
+      setSubmitError(true);
     } finally {
       setLoading(false);
     }
@@ -61,7 +65,12 @@ export function ConfirmationButtons({ barWhiskeyId, whiskeyName, compact = false
   }
 
   return (
-    <div className={`flex items-center gap-2 ${compact ? '' : 'mt-1'}`}>
+    <div className={`flex flex-wrap items-center gap-2 ${compact ? '' : 'mt-1'}`}>
+      {submitError && (
+        <span className={`text-red-500 ${compact ? 'text-xs' : 'text-sm'}`}>
+          Could not submit. Try again.
+        </span>
+      )}
       <button
         onClick={() => handleConfirmation('confirmed')}
         disabled={loading}

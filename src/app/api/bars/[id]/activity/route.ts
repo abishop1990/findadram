@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { clampInt } from '@/lib/api-helpers';
 
 export async function GET(
   request: NextRequest,
@@ -7,7 +8,7 @@ export async function GET(
 ) {
   const { id } = await params;
   const searchParams = request.nextUrl.searchParams;
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit = clampInt(searchParams.get('limit'), 20, 1, 100);
 
   const supabase = await createServerSupabaseClient();
 
@@ -17,7 +18,8 @@ export async function GET(
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('GET /api/bars/[id]/activity error:', error.message);
+    return NextResponse.json({ error: 'Failed to fetch activity' }, { status: 500 });
   }
 
   return NextResponse.json({ activity: data });

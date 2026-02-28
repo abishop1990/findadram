@@ -32,6 +32,7 @@ function timeAgo(dateString: string): string {
 export function ActivityFeed({ barId }: { barId: string }) {
   const [activity, setActivity] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch(`/api/bars/${barId}/activity?limit=15`)
@@ -39,7 +40,7 @@ export function ActivityFeed({ barId }: { barId: string }) {
       .then(data => {
         setActivity(data.activity || []);
       })
-      .catch(() => {})
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [barId]);
 
@@ -49,6 +50,14 @@ export function ActivityFeed({ barId }: { barId: string }) {
         {[1, 2, 3].map(i => (
           <div key={i} className="animate-pulse rounded-lg bg-oak-100 h-16" />
         ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500 text-sm">Could not load activity. Please try again later.</p>
       </div>
     );
   }
@@ -63,9 +72,9 @@ export function ActivityFeed({ barId }: { barId: string }) {
 
   return (
     <div className="space-y-2">
-      {activity.map((item, index) => (
+      {activity.map((item) => (
         <div
-          key={index}
+          key={`${item.activity_type}-${item.whiskey_id}-${item.created_at}`}
           className="flex items-start gap-3 rounded-lg bg-white border border-oak-100 p-3"
         >
           <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${

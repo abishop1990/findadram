@@ -64,7 +64,7 @@ export default async function HomePage() {
       label: 'Bars',
       value: barsCount ?? 0,
       icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
         </svg>
       ),
@@ -73,7 +73,7 @@ export default async function HomePage() {
       label: 'Whiskeys',
       value: whiskeysCount ?? 0,
       icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21a48.309 48.309 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
         </svg>
       ),
@@ -82,7 +82,7 @@ export default async function HomePage() {
       label: 'Sightings',
       value: sightingsCount ?? 0,
       icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+        <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
@@ -164,7 +164,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-4 py-4 sm:py-6">
           <dl className={`grid gap-2 sm:gap-0 sm:divide-x divide-oak-200 ${stats.length === 2 ? 'grid-cols-2 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
             {stats.map(({ label, value, icon }) => (
-              <div key={label} className="flex flex-col items-center gap-1 px-2 sm:px-4 py-2 sm:py-2 text-center border-b border-oak-200 sm:border-0 last:border-0">
+              <div key={label} className="flex flex-col items-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 text-center border-b border-oak-200 sm:border-0 last:border-0">
                 <div className="text-whiskey-400 mb-0.5 sm:mb-1">{icon}</div>
                 <dt className="text-xs font-medium uppercase tracking-wider text-oak-500">{label}</dt>
                 <dd className="text-xl sm:text-2xl md:text-3xl font-bold text-whiskey-800">
@@ -285,7 +285,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3">
             {recentSightings.map((s) => {
               const bar = s.bar as unknown as { id: string; name: string } | null;
               const whiskey = s.whiskey as unknown as { id: string; name: string; type: string } | null;
@@ -450,7 +450,7 @@ export default async function HomePage() {
             find their next dram.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto px-4 sm:px-0">
+          <div className="flex flex-col items-center justify-center gap-3 w-full sm:w-auto sm:flex-row px-4 sm:px-0">
             <Link
               href="/submit"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-whiskey-400 px-6 py-3 text-sm font-semibold text-whiskey-950 shadow hover:bg-whiskey-300 transition-colors min-h-11 sm:min-h-auto"
@@ -460,21 +460,23 @@ export default async function HomePage() {
               </svg>
               Submit a Bar Menu
             </Link>
-            <Link
-              href="/bars"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
-            >
-              Browse Bars
-            </Link>
-            <Link
-              href="/bottles"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-              </svg>
-              Find Bottles
-            </Link>
+            <div className="flex flex-row gap-3 w-full sm:contents">
+              <Link
+                href="/bars"
+                className="flex-1 sm:flex-none sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
+              >
+                Browse Bars
+              </Link>
+              <Link
+                href="/bottles"
+                className="flex-1 sm:flex-none sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                </svg>
+                Find Bottles
+              </Link>
+            </div>
           </div>
         </div>
       </section>

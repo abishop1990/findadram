@@ -34,7 +34,7 @@ function Header() {
             Find a Dram
           </span>
           <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-whiskey-500 transition-colors duration-200 group-hover:text-whiskey-400">
-            Pacific Northwest Whiskey Guide
+            Portland&apos;s Whiskey Guide
           </span>
         </Link>
 
@@ -82,6 +82,17 @@ function Header() {
           >
             Sign In
           </Link>
+          <Link
+            href="/auth/signup"
+            className={[
+              'ml-1 px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 shadow-sm',
+              pathname === '/auth/signup'
+                ? 'bg-whiskey-300 text-whiskey-950'
+                : 'bg-whiskey-500 text-whiskey-50 hover:bg-whiskey-400 hover:text-whiskey-950',
+            ].join(' ')}
+          >
+            Sign Up
+          </Link>
         </nav>
 
         {/* Mobile hamburger */}
@@ -90,7 +101,7 @@ function Header() {
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
-          className="sm:hidden flex flex-col justify-center items-center w-9 h-9 gap-[5px] rounded-md text-whiskey-300 hover:text-whiskey-100 hover:bg-whiskey-800/50 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-whiskey-400"
+          className="sm:hidden flex flex-col justify-center items-center w-11 h-11 gap-[5px] rounded-md text-whiskey-300 hover:text-whiskey-100 hover:bg-whiskey-800/50 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-whiskey-400"
           onClick={() => setMenuOpen((prev) => !prev)}
         >
           <span
@@ -152,13 +163,25 @@ function Header() {
             href="/auth/login"
             onClick={() => setMenuOpen(false)}
             className={[
-              'block px-3 py-3 text-sm font-medium rounded-md transition-colors duration-200 border-b border-whiskey-900/60 last:border-0',
+              'block px-3 py-3 text-sm font-medium rounded-md transition-colors duration-200 border-b border-whiskey-900/60',
               pathname === '/auth/login'
                 ? 'text-whiskey-200 bg-whiskey-800/40'
                 : 'text-whiskey-400 hover:text-whiskey-100 hover:bg-whiskey-800/30',
             ].join(' ')}
           >
             Sign In
+          </Link>
+          <Link
+            href="/auth/signup"
+            onClick={() => setMenuOpen(false)}
+            className={[
+              'block px-3 py-3 text-sm font-medium rounded-md transition-colors duration-200 last:border-0',
+              pathname === '/auth/signup'
+                ? 'text-whiskey-200 bg-whiskey-800/40'
+                : 'text-whiskey-400 hover:text-whiskey-100 hover:bg-whiskey-800/30',
+            ].join(' ')}
+          >
+            Sign Up
           </Link>
         </nav>
       )}
@@ -184,7 +207,7 @@ function Footer() {
             </h3>
             <p className="text-sm leading-relaxed text-whiskey-500">
               Find a Dram helps whiskey lovers discover what&apos;s on the shelf at bars
-              across the Pacific Northwest — Portland, Vancouver WA, and Seattle — before you walk through the door.
+              across the Portland metro area — before you walk through the door.
             </p>
           </div>
 
@@ -216,18 +239,19 @@ function Footer() {
               className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-whiskey-300"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
-              Pacific Northwest
+              Portland Focus
             </h3>
             <p className="text-sm leading-relaxed text-whiskey-500">
-              We cover Portland OR, Vancouver WA, and the Seattle metro area. Hyper-local by design.
+              We&apos;re focused exclusively on the Portland, OR metro area — from the Pearl
+              District to Southeast, Northeast, and beyond. Hyper-local by design.
             </p>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="mt-10 pt-6 border-t border-whiskey-900/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-whiskey-700">
-          <span>Built for the Pacific Northwest whiskey community.</span>
-          <span>&copy; 2026 Find a Dram. Pacific Northwest.</span>
+          <span>Built for the Portland whiskey community.</span>
+          <span>&copy; {new Date().getFullYear()} Find a Dram. Portland, OR.</span>
         </div>
       </div>
     </footer>

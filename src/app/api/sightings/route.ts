@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { clampInt } from '@/lib/api-helpers';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const bar_id = searchParams.get('bar_id');
   const whiskey_id = searchParams.get('whiskey_id');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit = clampInt(searchParams.get('limit'), 20, 1, 100);
 
   const supabase = await createServerSupabaseClient();
 
@@ -33,7 +34,8 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('GET /api/sightings error:', error.message);
+    return NextResponse.json({ error: 'Failed to fetch sightings' }, { status: 500 });
   }
 
   return NextResponse.json({ sightings: data });
@@ -59,6 +61,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Rating must be between 1 and 5' }, { status: 400 });
   }
 
+  if (price !== undefined && price !== null && (typeof price !== 'number' || price < 0 || price > 10000)) {
+    return NextResponse.json({ error: 'Price must be between 0 and 10000' }, { status: 400 });
+  }
+
   const supabase = await createServerSupabaseClient();
 
   const { data, error } = await supabase
@@ -76,7 +82,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('POST /api/sightings error:', error.message);
+    return NextResponse.json({ error: 'Failed to create sighting' }, { status: 500 });
   }
 
   return NextResponse.json({ sighting: data }, { status: 201 });

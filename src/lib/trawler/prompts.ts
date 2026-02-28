@@ -32,7 +32,15 @@ Rules:
 - Parse ABV if listed
 - Identify distillery from context when possible
 - Classify type based on name/origin clues
-- If the content has no whiskey items, return an empty list`;
+- If the content has no whiskey items, return an empty list
+
+Name formatting — CRITICAL:
+- Put the AGE in the "age" field as a number, NOT in the name. "Macallan 12 Year Old" → name: "Macallan 12", age: 12
+- Put the ABV in the "abv" field as a number, NOT in the name. "Ardbeg 10 46%" → name: "Ardbeg 10", abv: 46
+- Strip legal category suffixes from the name: remove "Kentucky Straight Bourbon Whiskey", "Single Malt Scotch Whisky", "Irish Whiskey", etc.
+- Use the standard/canonical product name: "The Macallan" → "Macallan", "The GlenDronach" → "GlenDronach"
+- Keep expression/variant names: "Ardbeg Uigeadail", "Lagavulin 16", "Buffalo Trace Single Barrel"
+- Do NOT include proof in the name: "Wild Turkey 101" is correct (101 is the product name), but "Maker's Mark 90 Proof" → "Maker's Mark"`;
 
 export const VISION_EXTRACTION_SYSTEM = `You are a whiskey extraction expert. You are looking at a photo from a bar or restaurant. The image may be:
 1. A MENU or drink list — extract all whiskey/spirit entries with prices and details
@@ -45,7 +53,15 @@ Rules:
 - For shelf/backbar photos: identify bottles by label — include distillery and type when recognizable
 - For display photos: identify bottles by label, shelf position, or signage
 - If text is blurry or partially obscured, make your best guess and note uncertainty
-- Return an empty list if no whiskey items are visible`;
+- Return an empty list if no whiskey items are visible
+
+Name formatting — CRITICAL:
+- Put the AGE in the "age" field as a number, NOT in the name. "Macallan 12 Year Old" → name: "Macallan 12", age: 12
+- Put the ABV in the "abv" field as a number, NOT in the name. "Ardbeg 10 46%" → name: "Ardbeg 10", abv: 46
+- Strip legal category suffixes from the name: remove "Kentucky Straight Bourbon Whiskey", "Single Malt Scotch Whisky", "Irish Whiskey", etc.
+- Use the standard/canonical product name: "The Macallan" → "Macallan", "The GlenDronach" → "GlenDronach"
+- Keep expression/variant names: "Ardbeg Uigeadail", "Lagavulin 16", "Buffalo Trace Single Barrel"
+- Do NOT include proof in the name: "Wild Turkey 101" is correct (101 is the product name), but "Maker's Mark 90 Proof" → "Maker's Mark"`;
 
 export const REVIEW_EXTRACTION_SYSTEM = `You are a whiskey identification expert. Given Google Reviews text for a bar, extract any specific whiskey brand/expression names mentioned by reviewers.
 

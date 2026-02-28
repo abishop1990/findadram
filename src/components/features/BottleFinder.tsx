@@ -6,13 +6,13 @@ import type { LiquorStoreResult } from '@/lib/liquor-search';
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function ProductCard({ store }: { store: LiquorStoreResult }) {
+function ProductCard({ store, searchQuery }: { store: LiquorStoreResult; searchQuery?: string }) {
   return (
     <article className="rounded-xl border border-oak-200 bg-white p-4 shadow-sm hover:border-whiskey-300 hover:shadow-md transition-all duration-150">
       {/* Product name + price */}
       <div className="flex items-start justify-between gap-3 mb-2">
         <h3 className="font-semibold text-whiskey-900 text-sm leading-snug">
-          {store.productName || store.storeName}
+          {store.productName || searchQuery || 'Unknown Product'}
         </h3>
         {store.price != null && (
           <span className="shrink-0 text-lg font-bold text-whiskey-700">
@@ -344,7 +344,7 @@ export function BottleFinder({ initialQuery }: BottleFinderProps = {}) {
           {results.length > 0 && (
             <div className="grid grid-cols-1 gap-3">
               {results.map((store, idx) => (
-                <ProductCard key={`${store.itemCode}-${store.bottleSize}-${idx}`} store={store} />
+                <ProductCard key={`${store.itemCode}-${store.bottleSize}-${idx}`} store={store} searchQuery={query} />
               ))}
             </div>
           )}

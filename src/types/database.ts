@@ -1,5 +1,6 @@
 export type WhiskeyType = 'bourbon' | 'scotch' | 'irish' | 'rye' | 'japanese' | 'canadian' | 'single_malt' | 'blended' | 'other';
 export type TrawlStatus = 'pending' | 'processing' | 'completed' | 'failed';
+export type VenueCategory = 'whiskey_bar' | 'cocktail_bar' | 'restaurant' | 'pub' | 'hotel_bar' | 'distillery' | 'brewery' | 'wine_bar' | 'lounge' | 'other';
 
 export interface Bar {
   id: string;
@@ -12,6 +13,7 @@ export interface Bar {
   phone: string | null;
   website: string | null;
   google_place_id: string | null;
+  category: VenueCategory;
   metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
@@ -135,8 +137,9 @@ export type BarClaimInsert = {
   status?: ClaimStatus;
 };
 
-export type BarInsert = Omit<Bar, 'id' | 'created_at' | 'updated_at' | 'metadata'> & {
+export type BarInsert = Omit<Bar, 'id' | 'created_at' | 'updated_at' | 'metadata' | 'category'> & {
   id?: string;
+  category?: VenueCategory;
   metadata?: Record<string, unknown>;
 };
 
@@ -158,6 +161,7 @@ export interface BarSearchResult {
   address: string | null;
   city: string | null;
   state: string | null;
+  category: VenueCategory | null;
   latitude: number;
   longitude: number;
   distance_meters: number | null;
@@ -247,6 +251,7 @@ export interface Database {
       whiskey_type: WhiskeyType;
       trawl_status: TrawlStatus;
       claim_status: ClaimStatus;
+      venue_category: VenueCategory;
     };
     CompositeTypes: Record<string, never>;
   };

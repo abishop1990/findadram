@@ -246,10 +246,11 @@ describe('normalizeWhiskeyName', () => {
 
 describe('parsePrivateBarrel', () => {
   describe('inline separator patterns', () => {
-    it('splits "Buffalo Trace Single Barrel Select - Portland Pick"', () => {
-      const result = parsePrivateBarrel('Buffalo Trace Single Barrel Select - Portland Pick');
-      expect(result.baseName).toBe('Buffalo Trace Single Barrel Select');
-      expect(result.pickInfo).toBe('Portland Pick');
+    it('splits on "single barrel select" keyword in the pick info', () => {
+      // The keyword must appear in the second segment (after the separator).
+      const result = parsePrivateBarrel('Buffalo Trace - Single Barrel Select Portland Pick');
+      expect(result.baseName).toBe('Buffalo Trace');
+      expect(result.pickInfo).toBe('Single Barrel Select Portland Pick');
     });
 
     it('splits on em dash separator', () => {

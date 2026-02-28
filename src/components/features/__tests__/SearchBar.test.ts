@@ -35,60 +35,118 @@ describe('SearchBar suggestion routing', () => {
 // ---------------------------------------------------------------------------
 // Search URL construction
 // Mirrors the query string built in handleSubmit.
+// Now supports optional location coordinates.
 // ---------------------------------------------------------------------------
 
-function buildSearchUrl(query: string, type: 'bar' | 'whiskey'): string {
-  return `/search?q=${encodeURIComponent(query)}&type=${type}`;
+interface LocationState {
+  lat: number;
+  lng: number;
+  displayName: string;
+}
+
+function buildSearchUrl(
+  query: string,
+  type: 'bar' | 'whiskey',
+  location?: LocationState | null
+): string {
+  const params = new URLSearchParams({ q: query, type });
+  if (location) {
+    params.set('lat', location.lat.toFixed(4));
+    params.set('lng', location.lng.toFixed(4));
+  }
+  return `/search?${params.toString()}`;
 }
 
 describe('SearchBar URL construction', () => {
-  it('builds a whiskey search URL', () => {
+  it('builds a whiskey search URL without location', () => {
     expect(buildSearchUrl('buffalo trace', 'whiskey')).toBe(
-      '/search?q=buffalo%20trace&type=whiskey'
+      '/search?q=buffalo+trace&type=whiskey'
     );
   });
 
-  it('builds a bar search URL', () => {
+  it('builds a bar search URL without location', () => {
     expect(buildSearchUrl('multnomah', 'bar')).toBe('/search?q=multnomah&type=bar');
   });
 
   it('percent-encodes special characters in the query', () => {
     const url = buildSearchUrl("maker's mark", 'whiskey');
-    expect(url).toBe("/search?q=maker's%20mark&type=whiskey");
+    expect(url).toContain("maker%27s");
   });
 
   it('percent-encodes ampersands in the query', () => {
     const url = buildSearchUrl('bourbon & rye', 'whiskey');
-    expect(url).toContain('bourbon%20%26%20rye');
+    expect(url).toContain('bourbon+%26+rye');
+  });
+
+  it('includes lat/lng when location is provided', () => {
+    const loc: LocationState = { lat: 45.5231, lng: -122.6765, displayName: 'Portland, OR' };
+    const url = buildSearchUrl('scotch', 'bar', loc);
+    expect(url).toBe('/search?q=scotch&type=bar&lat=45.5231&lng=-122.6765');
+  });
+
+  it('omits lat/lng when location is null', () => {
+    const url = buildSearchUrl('bourbon', 'whiskey', null);
+    expect(url).not.toContain('lat=');
+    expect(url).not.toContain('lng=');
+  });
+
+  it('rounds coordinates to 4 decimal places', () => {
+    const loc: LocationState = { lat: 47.6062123456, lng: -122.3320987654, displayName: 'Seattle' };
+    const url = buildSearchUrl('rye', 'bar', loc);
+    expect(url).toContain('lat=47.6062');
+    expect(url).toContain('lng=-122.3321');
   });
 });
 
 // ---------------------------------------------------------------------------
 // Autocomplete fetch URL construction
 // Mirrors the fetch URL built inside the fetchSuggestions effect.
+// Now uses URLSearchParams and optionally includes location.
 // ---------------------------------------------------------------------------
 
-function buildSuggestionsUrl(query: string, type: 'bar' | 'whiskey', limit = 5): string {
-  return `/api/search?q=${encodeURIComponent(query)}&type=${type}&limit=${limit}`;
+function buildSuggestionsUrl(
+  query: string,
+  type: 'bar' | 'whiskey',
+  location?: LocationState | null,
+  limit = 5
+): string {
+  const params = new URLSearchParams({ q: query, type, limit: String(limit) });
+  if (location) {
+    params.set('lat', String(location.lat));
+    params.set('lng', String(location.lng));
+  }
+  return `/api/search?${params.toString()}`;
 }
 
 describe('SearchBar suggestions fetch URL', () => {
-  it('builds the correct suggestions URL', () => {
+  it('builds the correct suggestions URL without location', () => {
     expect(buildSuggestionsUrl('pappy', 'whiskey')).toBe(
       '/api/search?q=pappy&type=whiskey&limit=5'
     );
   });
 
   it('encodes spaces in the query', () => {
-    expect(buildSuggestionsUrl('wild turkey', 'whiskey')).toBe(
-      '/api/search?q=wild%20turkey&type=whiskey&limit=5'
-    );
+    const url = buildSuggestionsUrl('wild turkey', 'whiskey');
+    expect(url).toBe('/api/search?q=wild+turkey&type=whiskey&limit=5');
   });
 
   it('supports bar type', () => {
     expect(buildSuggestionsUrl('heaven', 'bar')).toBe(
       '/api/search?q=heaven&type=bar&limit=5'
     );
+  });
+
+  it('includes location coordinates when provided', () => {
+    const loc: LocationState = { lat: 45.5231, lng: -122.6765, displayName: 'Portland' };
+    const url = buildSuggestionsUrl('bourbon', 'bar', loc);
+    expect(url).toContain('lat=45.5231');
+    expect(url).toContain('lng=-122.6765');
+  });
+
+  it('omits location when null', () => {
+    const url = buildSuggestionsUrl('scotch', 'whiskey', null);
+    expect(url).not.toContain('lat=');
+    expect(url).not.toContain('lng=');
   });
 });
 

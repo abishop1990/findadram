@@ -6,10 +6,80 @@ import { Input } from '@/components/ui/Input';
 import { useLocation } from '@/hooks/useLocation';
 
 export function LocationPrompt() {
-  const { coords, loading, error, requestLocation } = useLocation();
+  const { coords, loading, error, requestLocation, updateCoords, clearCoords } = useLocation();
   const [manualInput, setManualInput] = useState('');
   const [showManual, setShowManual] = useState(false);
+  const [geocoding, setGeocoding] = useState(false);
+  const [geocodeError, setGeocodeError] = useState<string | null>(null);
 
+  // Manual input form — check BEFORE coords so "Change" actually works
+  if (showManual) {
+    return (
+      <form
+        className="flex flex-col gap-2"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (!manualInput.trim()) return;
+
+          setGeocoding(true);
+          setGeocodeError(null);
+
+          try {
+            const res = await fetch(`/api/geocode?q=${encodeURIComponent(manualInput)}`);
+            if (!res.ok) {
+              setGeocodeError('Could not find that location. Try a zip code or city name.');
+              setGeocoding(false);
+              return;
+            }
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              const { lat, lon } = data[0];
+              updateCoords({ lat: parseFloat(lat), lng: parseFloat(lon) });
+              setShowManual(false);
+              setManualInput('');
+            } else {
+              setGeocodeError('No results found. Try a different search.');
+            }
+          } catch {
+            setGeocodeError('Network error. Please try again.');
+          } finally {
+            setGeocoding(false);
+          }
+        }}
+      >
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            value={manualInput}
+            onChange={(e) => setManualInput(e.target.value)}
+            placeholder="Enter city or zip code..."
+            className="max-w-xs"
+            disabled={geocoding}
+          />
+          <Button type="submit" size="sm" disabled={geocoding}>
+            {geocoding ? 'Finding...' : 'Set Location'}
+          </Button>
+        </div>
+        {geocodeError && (
+          <p className="text-xs text-red-500">{geocodeError}</p>
+        )}
+        {coords && (
+          <button
+            type="button"
+            className="text-xs text-oak-500 underline hover:text-oak-700 self-start"
+            onClick={() => {
+              setShowManual(false);
+              setGeocodeError(null);
+            }}
+          >
+            Cancel
+          </button>
+        )}
+      </form>
+    );
+  }
+
+  // Location already detected
   if (coords) {
     return (
       <div className="flex items-center gap-2 text-sm text-oak-600">
@@ -27,39 +97,7 @@ export function LocationPrompt() {
     );
   }
 
-  if (showManual) {
-    return (
-      <form
-        className="flex gap-2"
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (manualInput.trim()) {
-            try {
-              const res = await fetch(`/api/geocode?q=${encodeURIComponent(manualInput)}`);
-              const data = await res.json();
-              if (Array.isArray(data) && data.length > 0) {
-                const { lat, lon } = data[0];
-                sessionStorage.setItem('findadram_location', JSON.stringify({ lat: parseFloat(lat), lng: parseFloat(lon) }));
-                window.location.reload();
-              }
-            } catch {
-              // Silently fail
-            }
-          }
-        }}
-      >
-        <Input
-          type="text"
-          value={manualInput}
-          onChange={(e) => setManualInput(e.target.value)}
-          placeholder="Enter city or zip code..."
-          className="max-w-xs"
-        />
-        <Button type="submit" size="sm">Set Location</Button>
-      </form>
-    );
-  }
-
+  // No location yet — prompt user
   return (
     <div className="flex flex-col items-center gap-2">
       <Button

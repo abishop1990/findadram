@@ -65,5 +65,23 @@ export function useLocation() {
     );
   }, []);
 
-  return { coords, loading, error, requestLocation };
+  const updateCoords = useCallback((newCoords: Coordinates) => {
+    setCoords(newCoords);
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newCoords));
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const clearCoords = useCallback(() => {
+    setCoords(null);
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  return { coords, loading, error, requestLocation, updateCoords, clearCoords };
 }

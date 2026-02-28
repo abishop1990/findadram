@@ -2,6 +2,20 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { DistanceBadge } from '@/components/features/DistanceBadge';
+import type { VenueCategory } from '@/types/database';
+
+const CATEGORY_LABELS: Record<VenueCategory, string> = {
+  whiskey_bar: 'Whiskey Bar',
+  cocktail_bar: 'Cocktail Bar',
+  restaurant: 'Restaurant',
+  pub: 'Pub',
+  hotel_bar: 'Hotel Bar',
+  distillery: 'Distillery',
+  brewery: 'Brewery',
+  wine_bar: 'Wine Bar',
+  lounge: 'Lounge',
+  other: 'Bar',
+};
 
 interface BarCardProps {
   id: string;
@@ -9,12 +23,13 @@ interface BarCardProps {
   address?: string | null;
   city?: string | null;
   state?: string | null;
+  category?: VenueCategory | null;
   distance_meters?: number | null;
   whiskey_count?: number;
   index?: number;
 }
 
-export function BarCard({ id, name, address, city, state, distance_meters, whiskey_count, index = 0 }: BarCardProps) {
+export function BarCard({ id, name, address, city, state, category, distance_meters, whiskey_count, index = 0 }: BarCardProps) {
   const animationDelay = `${index * 0.1}s`;
 
   return (
@@ -43,6 +58,9 @@ export function BarCard({ id, name, address, city, state, distance_meters, whisk
               </div>
             )}
             <div className="flex items-center gap-2 mt-3">
+              {category && category !== 'other' && (
+                <Badge variant="default">{CATEGORY_LABELS[category]}</Badge>
+              )}
               {whiskey_count !== undefined && whiskey_count > 0 && (
                 <Badge variant="amber">{whiskey_count} whiskeys</Badge>
               )}

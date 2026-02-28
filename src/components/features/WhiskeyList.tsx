@@ -9,6 +9,9 @@ interface WhiskeyEntry {
   price: number | null;
   pour_size: string | null;
   notes: string | null;
+  last_verified?: string | null;
+  source_scraped_at?: string | null;
+  source_date?: string | null;
   whiskey: {
     id: string;
     name: string;
@@ -17,6 +20,31 @@ interface WhiskeyEntry {
     age: number | null;
     abv: number | null;
   };
+}
+
+const STALE_DAYS = 90;
+
+function isStale(dateString: string | null | undefined): boolean {
+  if (!dateString) return false;
+  const days = Math.floor((Date.now() - new Date(dateString).getTime()) / (1000 * 60 * 60 * 24));
+  return days > STALE_DAYS;
+}
+
+function getStalenessWarning(entry: WhiskeyEntry): string | null {
+  const verifiedStale = isStale(entry.last_verified);
+  const sourceDate = entry.source_date || entry.source_scraped_at;
+  const sourceStale = isStale(sourceDate);
+
+  if (verifiedStale && sourceStale) {
+    return 'Listing and source over 90 days old';
+  }
+  if (verifiedStale) {
+    return 'Not verified in over 90 days';
+  }
+  if (sourceStale) {
+    return 'Source data over 90 days old';
+  }
+  return null;
 }
 
 type SortKey = 'name' | 'price' | 'type';
@@ -66,7 +94,7 @@ export function WhiskeyList({ whiskeys }: { whiskeys: WhiskeyEntry[] }) {
           >
             <div className="min-w-0 flex-1">
               <p className="font-medium text-whiskey-900 truncate">{entry.whiskey.name}</p>
-              <div className="flex items-center gap-2 mt-0.5">
+              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                 {entry.whiskey.distillery && (
                   <span className="text-xs text-oak-500">{entry.whiskey.distillery}</span>
                 )}
@@ -75,6 +103,14 @@ export function WhiskeyList({ whiskeys }: { whiskeys: WhiskeyEntry[] }) {
                 )}
                 {entry.whiskey.age && (
                   <span className="text-xs text-oak-400">{entry.whiskey.age}yr</span>
+                )}
+                {getStalenessWarning(entry) && (
+                  <span className="inline-flex items-center gap-1 text-xs text-amber-600">
+                    <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                    {getStalenessWarning(entry)}
+                  </span>
                 )}
               </div>
             </div>

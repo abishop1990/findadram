@@ -8,7 +8,7 @@
  *
  * Usage: node scripts/google-places-enrich.mjs
  */
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 // Load .env.local
@@ -61,13 +61,37 @@ async function searchPlaces(query, maxResults = 5) {
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': GOOGLE_KEY,
-      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.businessStatus,places.websiteUri,places.nationalPhoneNumber,places.regularOpeningHours',
+      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.businessStatus,places.websiteUri,places.nationalPhoneNumber,places.regularOpeningHours,places.types',
     },
     body: JSON.stringify({
       textQuery: query,
       locationBias: {
         circle: {
           center: { latitude: 45.5152, longitude: -122.6784 },
+          radius: 30000,
+        },
+      },
+      maxResultCount: maxResults,
+    }),
+  });
+  if (!resp.ok) throw new Error(`Places search failed: ${resp.status}`);
+  const data = await resp.json();
+  return data.places || [];
+}
+
+async function searchPlacesWithCenter(query, maxResults = 20, center = { latitude: 45.5152, longitude: -122.6784 }) {
+  const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': GOOGLE_KEY,
+      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.businessStatus,places.websiteUri,places.nationalPhoneNumber,places.regularOpeningHours,places.types',
+    },
+    body: JSON.stringify({
+      textQuery: query,
+      locationBias: {
+        circle: {
+          center: { latitude: center.latitude, longitude: center.longitude },
           radius: 30000,
         },
       },
@@ -230,7 +254,7 @@ If no specific brands are mentioned, return {"whiskeys_mentioned": []}`,
 // ---------------------------------------------------------------------------
 
 async function getExistingBars() {
-  const resp = await fetch(`${SUPABASE_URL}/rest/v1/bars?select=id,name,city,state,google_place_id&state=eq.OR`, { headers: sbReadHeaders });
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/bars?select=id,name,city,state,google_place_id,website&state=eq.OR`, { headers: sbReadHeaders });
   return resp.json();
 }
 
@@ -357,57 +381,113 @@ async function enrichExistingBars(bars) {
 // Phase 2: Discover new bars
 // ---------------------------------------------------------------------------
 
-async function discoverNewBars(existingNames) {
-  console.log('=== PHASE 2: Discovering new Portland whiskey bars ===\n');
+async function discoverNewBars(existingBars) {
+  console.log('=== PHASE 2: Discovering new Portland venues ===\n');
 
-  const queries = [
-    'whiskey bar Portland Oregon',
-    'bourbon bar Portland OR',
-    'scotch bar Portland Oregon',
-    'cocktail bar whiskey Portland OR',
-    'distillery tasting room Portland Oregon',
-    'craft spirits bar Portland OR',
-    'speakeasy Portland Oregon',
+  // Search centers: downtown + SE + NE for coverage
+  const CENTERS = [
+    { latitude: 45.5152, longitude: -122.6784, label: 'Downtown' },   // downtown
+    { latitude: 45.5051, longitude: -122.6157, label: 'SE Portland' }, // SE
+    { latitude: 45.5585, longitude: -122.6384, label: 'NE Portland' }, // NE
   ];
 
-  const discovered = new Map(); // placeId -> place
+  const QUERIES = [
+    // Whiskey/bourbon focused
+    { q: 'whiskey bar Portland Oregon', category: 'whiskey_bar' },
+    { q: 'bourbon bar Portland OR', category: 'whiskey_bar' },
+    { q: 'scotch bar Portland Oregon', category: 'whiskey_bar' },
+    // Cocktail bars
+    { q: 'cocktail bar Portland Oregon', category: 'cocktail_bar' },
+    { q: 'speakeasy Portland Oregon', category: 'cocktail_bar' },
+    { q: 'craft cocktail lounge Portland OR', category: 'cocktail_bar' },
+    // Restaurants with bar programs
+    { q: 'restaurant with bar Portland Oregon', category: 'restaurant' },
+    { q: 'fine dining Portland OR', category: 'restaurant' },
+    { q: 'steakhouse Portland Oregon', category: 'restaurant' },
+    { q: 'upscale restaurant bar Portland OR', category: 'restaurant' },
+    // Pubs
+    { q: 'pub Portland Oregon', category: 'pub' },
+    { q: 'gastropub Portland OR', category: 'pub' },
+    { q: 'British pub Portland Oregon', category: 'pub' },
+    { q: 'Irish pub Portland OR', category: 'pub' },
+    // Hotel bars
+    { q: 'hotel bar Portland Oregon', category: 'hotel_bar' },
+    { q: 'hotel lounge Portland OR', category: 'hotel_bar' },
+    // Distilleries & breweries
+    { q: 'distillery tasting room Portland Oregon', category: 'distillery' },
+    { q: 'craft spirits distillery Portland OR', category: 'distillery' },
+    { q: 'brewery taproom Portland Oregon', category: 'brewery' },
+    // General bars & lounges
+    { q: 'bar Portland Oregon', category: 'other' },
+    { q: 'wine bar Portland OR', category: 'wine_bar' },
+    { q: 'lounge Portland Oregon', category: 'lounge' },
+    { q: 'dive bar Portland OR', category: 'other' },
+    { q: 'neighborhood bar Portland Oregon', category: 'other' },
+    { q: 'sports bar with spirits Portland OR', category: 'other' },
+  ];
 
-  for (const q of queries) {
-    console.log(`  Searching: "${q}"...`);
-    try {
-      const results = await searchPlaces(q, 10);
-      for (const place of results) {
-        if (discovered.has(place.id)) continue;
-        const lat = place.location?.latitude;
-        const lng = place.location?.longitude;
-        if (!lat || !lng || !isInPortland(lat, lng)) continue;
-        if (place.businessStatus === 'CLOSED_PERMANENTLY') continue;
+  // Types to exclude — these are Google Places types that aren't relevant
+  const EXCLUDED_TYPES = new Set([
+    'liquor_store', 'grocery_store', 'supermarket', 'convenience_store',
+    'gas_station', 'department_store', 'shopping_mall',
+  ]);
 
-        const name = place.displayName?.text || '';
-        const nameNorm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const isExisting = existingNames.some(n => {
-          const norm = n.toLowerCase().replace(/[^a-z0-9]/g, '');
-          return norm === nameNorm || norm.includes(nameNorm) || nameNorm.includes(norm);
-        });
+  const discovered = new Map(); // google_place_id -> { place, category }
 
-        if (!isExisting) {
-          discovered.set(place.id, place);
+  // Dedup by google_place_id against existing DB records
+  const existingPlaceIds = new Set(existingBars.filter(b => b.google_place_id).map(b => b.google_place_id));
+  const existingNames = existingBars.map(b => b.name);
+
+  for (const queryDef of QUERIES) {
+    // Use all centers for the most important categories, downtown only for less important
+    const centers = ['whiskey_bar', 'cocktail_bar', 'restaurant', 'pub'].includes(queryDef.category)
+      ? CENTERS
+      : [CENTERS[0]];
+
+    for (const center of centers) {
+      console.log(`  Searching: "${queryDef.q}" [${center.label}]...`);
+      try {
+        const results = await searchPlacesWithCenter(queryDef.q, 20, center);
+        for (const place of results) {
+          // Skip if already discovered or already in DB
+          if (discovered.has(place.id)) continue;
+          if (existingPlaceIds.has(place.id)) continue;
+
+          const lat = place.location?.latitude;
+          const lng = place.location?.longitude;
+          if (!lat || !lng || !isInPortland(lat, lng)) continue;
+          if (place.businessStatus === 'CLOSED_PERMANENTLY') continue;
+
+          // Filter out irrelevant types
+          const placeTypes = place.types || [];
+          if (placeTypes.some(t => EXCLUDED_TYPES.has(t))) continue;
+
+          // Also check by name dedup
+          const name = place.displayName?.text || '';
+          const nameNorm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const isExisting = existingNames.some(n => {
+            const norm = n.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return norm === nameNorm || norm.includes(nameNorm) || nameNorm.includes(norm);
+          });
+          if (isExisting) continue;
+
+          discovered.set(place.id, { place, category: queryDef.category });
         }
+        await sleep(300);
+      } catch (err) {
+        console.log(`    ERROR: ${err.message}`);
       }
-      await sleep(300);
-    } catch (err) {
-      console.log(`    ERROR: ${err.message}`);
     }
   }
 
-  console.log(`\n  Found ${discovered.size} new bars not in our database:\n`);
+  console.log(`\n  Found ${discovered.size} new venues not in our database:\n`);
 
   const newBars = [];
-  for (const place of discovered.values()) {
+  for (const { place, category } of discovered.values()) {
     const name = place.displayName?.text || 'Unknown';
     const lat = place.location?.latitude;
     const lng = place.location?.longitude;
-    console.log(`    + ${name} — ${place.formattedAddress} (${place.rating}/5, ${place.userRatingCount} reviews)`);
+    console.log(`    + ${name} [${category}] — ${place.formattedAddress} (${place.rating}/5, ${place.userRatingCount} reviews)`);
 
     const inserted = await insertBar({
       name,
@@ -419,10 +499,12 @@ async function discoverNewBars(existingNames) {
       phone: place.nationalPhoneNumber || null,
       website: place.websiteUri || null,
       google_place_id: place.id,
+      category,
       metadata: {
         google_rating: place.rating,
         google_review_count: place.userRatingCount,
         google_business_status: place.businessStatus,
+        google_types: place.types || [],
         discovered_via: 'google_places_search',
         discovered_at: new Date().toISOString(),
       },
@@ -525,8 +607,7 @@ async function main() {
   await enrichExistingBars(bars);
 
   // Phase 2: Discover new bars
-  const existingNames = bars.map(b => b.name);
-  const newBars = await discoverNewBars(existingNames);
+  const newBars = await discoverNewBars(bars);
   console.log(`\n  Added ${newBars.length} new bars\n`);
 
   // Phase 3: Photo OCR + review extraction for all bars with place IDs

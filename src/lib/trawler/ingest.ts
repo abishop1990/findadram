@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ExtractedMenu, TrawlResult, ExtractedWhiskey } from '@/types/trawler';
-import { normalizeWhiskeyName, similarityRatio, parsePrivateBarrel } from './normalize';
+import { normalizeWhiskeyName, similarityRatio, tokenSimilarity, parsePrivateBarrel } from './normalize';
 import { judgeDedup } from './extract';
 
 const FUZZY_THRESHOLD = 0.85;
@@ -127,12 +127,20 @@ async function findOrCreateWhiskey(
         }
       }
 
+      // Tier 2.5: Token-based similarity (catches word-order differences)
+      for (const candidate of candidates) {
+        if (tokenSimilarity(normalized, candidate.normalized_name) >= 0.90) {
+          return { id: candidate.id, created: false };
+        }
+      }
+
       // Tier 3: Claude judge for close-but-not-exact matches
       const closeMatches = candidates.filter(
-        (c) => similarityRatio(normalized, c.normalized_name) >= 0.6
+        (c) => similarityRatio(normalized, c.normalized_name) >= 0.6 ||
+               tokenSimilarity(normalized, c.normalized_name) >= 0.7
       );
 
-      for (const candidate of closeMatches.slice(0, 3)) {
+      for (const candidate of closeMatches.slice(0, 5)) {
         const isSame = await judgeDedup(extracted.name, candidate.name);
         if (isSame) {
           return { id: candidate.id, created: false };

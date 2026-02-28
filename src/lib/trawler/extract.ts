@@ -13,12 +13,12 @@ import type { ExtractedMenu } from '@/types/trawler';
 export async function extractFromText(html: string): Promise<ExtractedMenu> {
   const client = getAnthropicClient();
 
-  // Truncate very long HTML
-  const truncated = html.length > 50000 ? html.slice(0, 50000) : html;
+  // Truncate HTML — 25K chars is plenty for menu extraction
+  const truncated = html.length > 25000 ? html.slice(0, 25000) : html;
 
   const response = await client.messages.create({
     model: MODELS.TEXT_EXTRACTION,
-    max_tokens: 16384,
+    max_tokens: 8192,
     system: TEXT_EXTRACTION_SYSTEM,
     messages: [
       {
@@ -65,7 +65,7 @@ export async function extractFromImage(
 
   const response = await client.messages.create({
     model: MODELS.VISION_EXTRACTION,
-    max_tokens: 16384,
+    max_tokens: 8192,
     system: VISION_EXTRACTION_SYSTEM,
     messages: [
       {

@@ -278,7 +278,7 @@ export function SearchBar({
             aria-label={`Search ${type === 'bar' ? 'bars' : 'whiskeys'}`}
           />
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-2 rounded-lg border border-oak-200 bg-white shadow-lg max-h-60 overflow-y-auto scrollbar-none">
+            <div className="absolute top-full left-0 right-0 z-50 mt-2 rounded-lg border border-oak-200 bg-white shadow-lg max-h-48 sm:max-h-60 overflow-y-auto scrollbar-none">
               {suggestions.map((s) => (
                 <button
                   key={s.id}
@@ -383,7 +383,7 @@ export function SearchBar({
                     setGeocodeError(null);
                   }}
                   placeholder="City, zip code, or neighborhood..."
-                  className="w-full h-9 text-xs pr-3 pl-3"
+                  className="w-full h-11 text-xs pr-3 pl-3"
                   disabled={geocoding}
                   aria-label="Location search"
                 />
@@ -393,7 +393,7 @@ export function SearchBar({
                 type="button"
                 onClick={handleNearMe}
                 disabled={geoLoading}
-                className="shrink-0 inline-flex items-center justify-center h-9 w-9 rounded-lg border border-oak-300 bg-white text-oak-500 hover:bg-oak-50 hover:text-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="shrink-0 inline-flex items-center justify-center h-11 w-11 rounded-lg border border-oak-300 bg-white text-oak-500 hover:bg-oak-50 hover:text-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Use my location"
                 title="Use my location"
               >
@@ -415,7 +415,7 @@ export function SearchBar({
                 type="submit"
                 size="sm"
                 disabled={geocoding || !locationInput.trim()}
-                className="shrink-0 h-9 text-xs px-3"
+                className="shrink-0 h-11 text-xs px-3"
               >
                 {geocoding ? 'Finding...' : 'Set'}
               </Button>

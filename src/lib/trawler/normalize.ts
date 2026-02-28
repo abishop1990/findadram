@@ -36,7 +36,7 @@ export function parsePrivateBarrel(name: string): PrivateBarrelResult {
 
   // Try parenthesised / bracketed pick block.
   const parenMatch = cleaned.match(
-    /^(.+?)\s*([(\[].+?\b(?:pick|private|selection|barrel\s+select)\b.+?[)\]])\s*(.*)$/i
+    /^(.+?)\s*([(\[].*?\b(?:pick|private|selection|barrel\s+select)\b.*?[)\]])\s*(.*)$/i
   );
   if (parenMatch) {
     const trailing = parenMatch[3].trim();
@@ -67,9 +67,17 @@ const DISTILLERY_ALIASES: ReadonlyArray<[pattern: RegExp, canonical: string]> =
     [/\bthe\s+dalmore\b/g, 'dalmore'],
     [/\bthe\s+balvenie\b/g, 'balvenie'],
     [/\bthe\s+glenrothes\b/g, 'glenrothes'],
+    [/\bthe\s+glendronach\b/g, 'glendronach'],
+    [/\bthe\s+glenmorangie\b/g, 'glenmorangie'],
+    [/\bthe\s+singleton\b/g, 'singleton'],
     [/\bmaker[''`]?s\s+mark\b/g, "maker's mark"],
     [/\bwild\s+turkey\s+distillery\b/g, 'wild turkey'],
+    [/\bjack\s+daniel[''`]?s\b/g, "jack daniel's"],
+    [/\bwoodford\s+reserve\s+distillery\b/g, 'woodford reserve'],
+    [/\bfour\s+roses\s+distillery\b/g, 'four roses'],
     [/\bbrown[- ]forman\b/g, 'brown-forman'],
+    [/\blaphroaig\s+distillery\b/g, 'laphroaig'],
+    [/\bhighland\s+park\s+distillery\b/g, 'highland park'],
   ];
 
 function normalizeDistilleryNames(s: string): string {
@@ -117,10 +125,12 @@ function normalizeAgeStatements(s: string): string {
 function stripAbvProof(s: string): string {
   // "100 proof" / "86.4 proof"
   s = s.replace(/\b\d+(?:\.\d+)?\s*proof\b/gi, '');
+  // "ABV 46%", "ABV 46" (must come before bare % to avoid leaving orphan "abv")
+  s = s.replace(/\babv\s+\d+(?:\.\d+)?\s*%?\s*/gi, '');
+  // Standalone "abv" (left over if % was already stripped by another rule)
+  s = s.replace(/\babv\b\s*/gi, '');
   // "46%", "46.0% ABV", "46% abv"
-  s = s.replace(/\b\d+(?:\.\d+)?\s*%(?:\s*abv)?\b/gi, '');
-  // "ABV 46%"
-  s = s.replace(/\babv\s+\d+(?:\.\d+)?\s*%?\b/gi, '');
+  s = s.replace(/\b\d+(?:\.\d+)?\s*%\s*(?:abv)?\s*/gi, '');
   return s;
 }
 

@@ -56,12 +56,12 @@ export default async function WhiskeysPage({ searchParams }: WhiskeysPageProps) 
       {/* Type Filter Tabs */}
       <section className="border-b border-oak-200 bg-white sticky top-0 z-10 shadow-sm">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="flex gap-1 overflow-x-auto py-3 scrollbar-none">
+          <div className="flex gap-1 snap-x snap-mandatory overflow-x-auto py-3 scrollbar-none">
             {WHISKEY_TYPES.map((t) => (
               <a
                 key={t.value}
                 href={t.value === 'all' ? '/whiskeys' : `/whiskeys?type=${t.value}`}
-                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+                className={`snap-start flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                   activeType === t.value
                     ? 'bg-amber-600 text-white'
                     : 'bg-oak-100 text-oak-700 hover:bg-amber-100 hover:text-amber-800'
@@ -86,7 +86,7 @@ export default async function WhiskeysPage({ searchParams }: WhiskeysPageProps) 
                 </span>
               )}
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {whiskeys.map((whiskey) => (
                 <WhiskeyCard
                   key={whiskey.id}

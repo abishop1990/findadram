@@ -8,14 +8,19 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
  */
 export async function PATCH(request: NextRequest) {
   try {
+    const supabase = await createServerSupabaseClient();
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { id, price, available, notes, pour_size } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'id is required' }, { status: 400 });
     }
-
-    const supabase = await createServerSupabaseClient();
 
     const updateData: Record<string, unknown> = {};
     if (price !== undefined) updateData.price = price;
@@ -32,7 +37,8 @@ export async function PATCH(request: NextRequest) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('PATCH /api/bar-whiskeys error:', error.message);
+      return NextResponse.json({ error: 'Failed to update bar whiskey' }, { status: 500 });
     }
 
     return NextResponse.json({ bar_whiskey: data });

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { BarList } from '@/components/features/BarList';
+import { LiquorStoreSection } from '@/components/features/LiquorStoreSection';
 import { Badge } from '@/components/ui/Badge';
 import Link from 'next/link';
 
@@ -52,6 +53,11 @@ export default async function WhiskeyDetailPage({
       id,
       price,
       pour_size,
+      last_verified,
+      source_trawl:trawl_jobs (
+        scraped_at,
+        source_date
+      ),
       bar:bars (
         id,
         name,
@@ -63,18 +69,25 @@ export default async function WhiskeyDetailPage({
     .eq('whiskey_id', id)
     .eq('available', true);
 
-  const bars = (barEntries || []).map((entry) => ({
-    id: entry.id,
-    price: entry.price,
-    pour_size: entry.pour_size,
-    bar: entry.bar as unknown as {
-      id: string;
-      name: string;
-      address: string | null;
-      city: string | null;
-      state: string | null;
-    },
-  }));
+  const bars = (barEntries || []).map((entry) => {
+    const rawTrawl = entry.source_trawl as unknown;
+    const trawl = (Array.isArray(rawTrawl) ? rawTrawl[0] : rawTrawl) as { scraped_at: string | null; source_date: string | null } | null;
+    return {
+      id: entry.id,
+      price: entry.price,
+      pour_size: entry.pour_size,
+      last_verified: entry.last_verified as string | null,
+      source_scraped_at: trawl?.scraped_at ?? null,
+      source_date: trawl?.source_date ?? null,
+      bar: entry.bar as unknown as {
+        id: string;
+        name: string;
+        address: string | null;
+        city: string | null;
+        state: string | null;
+      },
+    };
+  });
 
   const typeBadgeClass = typeColors[whiskey.type] || typeColors.other;
   const typeLabel = typeLabels[whiskey.type] || whiskey.type;
@@ -158,15 +171,15 @@ export default async function WhiskeyDetailPage({
           <div className="lg:col-span-2 space-y-6">
             {/* Key stats grid */}
             {(whiskey.type || whiskey.age || whiskey.abv || whiskey.region || whiskey.country) && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 {/* Type */}
-                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-4 py-4 text-center">
+                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-3 py-3 sm:px-4 sm:py-4 text-center">
                   <p className="text-xs font-semibold uppercase tracking-widest text-oak-400 mb-1">Type</p>
                   <p className="text-sm font-bold text-whiskey-900 leading-snug">{typeLabel}</p>
                 </div>
 
                 {/* Age */}
-                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-4 py-4 text-center">
+                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-3 py-3 sm:px-4 sm:py-4 text-center">
                   <p className="text-xs font-semibold uppercase tracking-widest text-oak-400 mb-1">Age</p>
                   <p className="text-sm font-bold text-whiskey-900">
                     {whiskey.age ? `${whiskey.age} yr` : 'NAS'}
@@ -174,7 +187,7 @@ export default async function WhiskeyDetailPage({
                 </div>
 
                 {/* ABV */}
-                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-4 py-4 text-center">
+                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-3 py-3 sm:px-4 sm:py-4 text-center">
                   <p className="text-xs font-semibold uppercase tracking-widest text-oak-400 mb-1">ABV</p>
                   <p className="text-sm font-bold text-whiskey-900">
                     {whiskey.abv ? `${whiskey.abv}%` : '—'}
@@ -182,7 +195,7 @@ export default async function WhiskeyDetailPage({
                 </div>
 
                 {/* Region */}
-                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-4 py-4 text-center">
+                <div className="rounded-xl bg-white border border-oak-200 shadow-sm px-3 py-3 sm:px-4 sm:py-4 text-center">
                   <p className="text-xs font-semibold uppercase tracking-widest text-oak-400 mb-1">Region</p>
                   <p className="text-sm font-bold text-whiskey-900 leading-snug">
                     {whiskey.region || whiskey.country || '—'}
@@ -223,6 +236,24 @@ export default async function WhiskeyDetailPage({
               </div>
               <div className="p-5">
                 <BarList bars={bars} />
+              </div>
+            </div>
+
+            {/* Buy a Bottle — OLCC liquor store search */}
+            <div className="bg-white rounded-xl border border-oak-200 shadow-sm overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-oak-100 bg-gradient-to-r from-amber-50 to-whiskey-50">
+                <div className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-amber-600">
+                    <path fillRule="evenodd" d="M6 5v1H4.667a1.75 1.75 0 0 0-1.743 1.598l-.826 9.5A1.75 1.75 0 0 0 3.84 19H16.16a1.75 1.75 0 0 0 1.743-1.902l-.826-9.5A1.75 1.75 0 0 0 15.334 6H14V5a4 4 0 0 0-8 0Zm4-2.5A2.5 2.5 0 0 0 7.5 5v1h5V5A2.5 2.5 0 0 0 10 2.5ZM7.5 10a2.5 2.5 0 0 0 5 0V8.75a.75.75 0 0 1 1.5 0V10a4 4 0 0 1-8 0V8.75a.75.75 0 0 1 1.5 0V10Z" clipRule="evenodd" />
+                  </svg>
+                  <h2 className="text-lg font-bold text-whiskey-900">Buy a Bottle</h2>
+                </div>
+                <span className="inline-flex items-center rounded-full bg-whiskey-100 border border-whiskey-200 px-2 py-0.5 text-xs font-medium text-whiskey-700">
+                  Oregon
+                </span>
+              </div>
+              <div className="p-5">
+                <LiquorStoreSection whiskeyName={whiskey.name} />
               </div>
             </div>
           </div>

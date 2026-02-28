@@ -33,6 +33,10 @@ export default async function BarDetailPage({
       notes,
       last_verified,
       confidence,
+      source_trawl:trawl_jobs (
+        scraped_at,
+        source_date
+      ),
       whiskey:whiskeys (
         id,
         name,
@@ -47,22 +51,28 @@ export default async function BarDetailPage({
     .eq('available', true)
     .order('price', { ascending: true });
 
-  const whiskeys = (whiskeyEntries || []).map((entry) => ({
-    id: entry.id,
-    price: entry.price,
-    pour_size: entry.pour_size,
-    notes: entry.notes,
-    last_verified: entry.last_verified,
-    confidence: entry.confidence,
-    whiskey: entry.whiskey as unknown as {
-      id: string;
-      name: string;
-      distillery: string | null;
-      type: string;
-      age: number | null;
-      abv: number | null;
-    },
-  }));
+  const whiskeys = (whiskeyEntries || []).map((entry) => {
+    const rawTrawl = entry.source_trawl as unknown;
+    const trawl = (Array.isArray(rawTrawl) ? rawTrawl[0] : rawTrawl) as { scraped_at: string | null; source_date: string | null } | null;
+    return {
+      id: entry.id,
+      price: entry.price,
+      pour_size: entry.pour_size,
+      notes: entry.notes,
+      last_verified: entry.last_verified,
+      confidence: entry.confidence,
+      source_scraped_at: trawl?.scraped_at ?? null,
+      source_date: trawl?.source_date ?? null,
+      whiskey: entry.whiskey as unknown as {
+        id: string;
+        name: string;
+        distillery: string | null;
+        type: string;
+        age: number | null;
+        abv: number | null;
+      },
+    };
+  });
 
   const locationParts = [bar.city, bar.state, bar.country].filter(Boolean);
 
@@ -96,7 +106,7 @@ export default async function BarDetailPage({
               {/* Location row */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-whiskey-300">
                 {bar.address && (
-                  <span className="flex items-center gap-1.5 text-sm">
+                  <span className="flex items-center gap-1.5 text-sm break-words">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 shrink-0 text-whiskey-400">
                       <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clipRule="evenodd" />
                     </svg>
@@ -114,7 +124,7 @@ export default async function BarDetailPage({
             {/* Whiskey count badge */}
             <div className="shrink-0">
               <div className="inline-flex flex-col items-center justify-center bg-whiskey-800/60 border border-whiskey-700/50 rounded-xl px-5 py-3 backdrop-blur-sm">
-                <span className="text-3xl font-bold text-whiskey-100">{whiskeys.length}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-whiskey-100">{whiskeys.length}</span>
                 <span className="text-xs text-whiskey-400 uppercase tracking-widest mt-0.5">
                   {whiskeys.length === 1 ? 'whiskey' : 'whiskeys'} available
                 </span>

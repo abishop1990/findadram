@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { BottleFinder } from '@/components/features/BottleFinder';
 
 export const metadata = {
@@ -6,7 +7,12 @@ export const metadata = {
     'Search Oregon OLCC liquor stores for bottles near you. Find Buffalo Trace, Pappy Van Winkle, Weller, and more at state liquor stores across Oregon.',
 };
 
-export default function BottlesPage() {
+export default async function BottlesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q: initialQuery } = await searchParams;
   return (
     <div>
       {/* ── Dark hero header ─────────────────────────────────────────────── */}
@@ -29,7 +35,7 @@ export default function BottlesPage() {
             Oregon Liquor Stores
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-bold text-whiskey-100 mb-4 tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-whiskey-100 mb-4 tracking-tight leading-tight">
             Find a Bottle
           </h1>
 
@@ -51,7 +57,39 @@ export default function BottlesPage() {
         <h2 id="bottle-finder-heading" className="sr-only">
           Bottle finder search
         </h2>
-        <BottleFinder />
+        <BottleFinder initialQuery={initialQuery} />
+      </section>
+
+      {/* ── Also find at bars ──────────────────────────────────────────── */}
+      <section className="border-t border-oak-200 bg-white">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <div className="rounded-xl bg-gradient-to-r from-whiskey-50 to-amber-50 border border-whiskey-200 p-6 text-center">
+            <h2 className="text-lg font-bold text-whiskey-900 mb-2">
+              Want to try it at a bar instead?
+            </h2>
+            <p className="text-sm text-oak-600 mb-4 max-w-lg mx-auto">
+              Find Portland bars and restaurants that pour your favorite whiskey by the glass.
+              Browse menus, see prices, and discover new spots.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/search?type=whiskey"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-whiskey-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-whiskey-600 transition-colors"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                Search Whiskeys at Bars
+              </Link>
+              <Link
+                href="/bars"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-300 bg-white px-5 py-2.5 text-sm font-semibold text-whiskey-800 hover:bg-whiskey-50 transition-colors"
+              >
+                Browse Portland Bars
+              </Link>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── How it works ─────────────────────────────────────────────────── */}

@@ -13,6 +13,8 @@ interface WhiskeyEntry {
   notes: string | null;
   last_verified: string | null;
   confidence: number | null;
+  source_scraped_at?: string | null;
+  source_date?: string | null;
   whiskey: {
     id: string;
     name: string;
@@ -21,6 +23,31 @@ interface WhiskeyEntry {
     age: number | null;
     abv: number | null;
   };
+}
+
+const STALE_DAYS = 90;
+
+function isStale(dateString: string | null | undefined): boolean {
+  if (!dateString) return false;
+  const days = Math.floor((Date.now() - new Date(dateString).getTime()) / (1000 * 60 * 60 * 24));
+  return days > STALE_DAYS;
+}
+
+function getStalenessWarning(entry: WhiskeyEntry): string | null {
+  const verifiedStale = isStale(entry.last_verified);
+  const sourceDate = entry.source_date || entry.source_scraped_at;
+  const sourceStale = isStale(sourceDate);
+
+  if (verifiedStale && sourceStale) {
+    return 'Listing and source data are over 90 days old';
+  }
+  if (verifiedStale) {
+    return 'Not verified in over 90 days';
+  }
+  if (sourceStale) {
+    return 'Source data is over 90 days old';
+  }
+  return null;
 }
 
 type SortKey = 'name' | 'price' | 'type';
@@ -168,7 +195,20 @@ export function WhiskeyListWithActions({
                     {entry.whiskey.age && (
                       <span className="text-xs text-oak-400">{entry.whiskey.age}yr</span>
                     )}
-                    <span className="text-xs text-oak-300">Verified {timeAgo(entry.last_verified)}</span>
+                    {(() => {
+                      const warning = getStalenessWarning(entry);
+                      if (warning) {
+                        return (
+                          <span className="inline-flex items-center gap-1 text-xs text-amber-600" title={warning}>
+                            <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                            </svg>
+                            {warning}
+                          </span>
+                        );
+                      }
+                      return <span className="text-xs text-oak-300">Verified {timeAgo(entry.last_verified)}</span>;
+                    })()}
                   </div>
 
                   {/* Confirmation buttons */}
@@ -181,19 +221,31 @@ export function WhiskeyListWithActions({
                   </div>
                 </div>
 
-                <div className="text-right ml-4 shrink-0 flex flex-col items-end gap-1">
+                <div className="text-right ml-2 sm:ml-4 shrink-0 flex flex-col items-end gap-1">
                   {entry.price != null && (
                     <p className="font-semibold text-whiskey-700">${entry.price.toFixed(2)}</p>
                   )}
                   {entry.pour_size && (
                     <p className="text-xs text-oak-400">{entry.pour_size}</p>
                   )}
-                  <button
-                    onClick={() => setSightingWhiskey({ id: entry.whiskey.id, name: entry.whiskey.name })}
-                    className="text-xs text-whiskey-500 hover:text-whiskey-400 opacity-0 group-hover:opacity-100 transition-opacity mt-1"
-                  >
-                    Log sighting
-                  </button>
+                  <div className="flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity mt-1">
+                    <button
+                      onClick={() => setSightingWhiskey({ id: entry.whiskey.id, name: entry.whiskey.name })}
+                      className="text-xs text-whiskey-500 hover:text-whiskey-400"
+                    >
+                      Log sighting
+                    </button>
+                    <span className="text-oak-300">|</span>
+                    <Link
+                      href={`/bottles?q=${encodeURIComponent(entry.whiskey.name)}`}
+                      className="text-xs text-amber-600 hover:text-amber-500 inline-flex items-center gap-0.5"
+                    >
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                      </svg>
+                      Find bottle
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

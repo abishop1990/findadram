@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { clampInt } from '@/lib/api-helpers';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const bar_whiskey_id = searchParams.get('bar_whiskey_id');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit = clampInt(searchParams.get('limit'), 20, 1, 100);
 
   const supabase = await createServerSupabaseClient();
 
@@ -19,7 +20,8 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('GET /api/confirmations error:', error.message);
+    return NextResponse.json({ error: 'Failed to fetch confirmations' }, { status: 500 });
   }
 
   // Aggregate confirmation stats
@@ -62,7 +64,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('POST /api/confirmations error:', error.message);
+    return NextResponse.json({ error: 'Failed to create confirmation' }, { status: 500 });
   }
 
   return NextResponse.json({ confirmation: data }, { status: 201 });

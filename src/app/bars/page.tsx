@@ -21,7 +21,7 @@ export default async function BarsPage() {
             Bars
           </h1>
           <p className="text-whiskey-300 mb-6 max-w-lg mx-auto">
-            Browse whiskey bars across the Pacific Northwest. Click any bar to see their full whiskey menu.
+            Browse whiskey bars across the Portland metro area. Click any bar to see their full whiskey menu.
           </p>
           <div className="flex justify-center">
             <SearchBar defaultType="bar" />
@@ -36,7 +36,7 @@ export default async function BarsPage() {
             <p className="text-sm text-oak-500 mb-6">
               Showing {bars.length} {bars.length === 1 ? 'bar' : 'bars'}
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {bars.map((bar) => (
                 <BarCard
                   key={bar.id}

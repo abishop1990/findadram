@@ -62,21 +62,32 @@ export default async function SearchPage({
 
   let barResults: BarSearchResult[] = [];
   let whiskeyResults: WhiskeySearchResult[] = [];
+  let totalCount = 0;
+
+  const RESULT_LIMIT = 50;
 
   const rpcArgs = {
     query: q,
     lat: lat ?? null,
     lng: lng ?? null,
     radius_meters: 50000,
-    result_limit: 20,
+    result_limit: RESULT_LIMIT,
   };
 
   if (type === 'bar') {
-    const { data } = await supabase.rpc('search_bars', rpcArgs);
+    const [{ data }, { count }] = await Promise.all([
+      supabase.rpc('search_bars', rpcArgs),
+      supabase.from('bars').select('id', { count: 'exact', head: true }),
+    ]);
     barResults = (data as BarSearchResult[] | null) ?? [];
+    totalCount = count ?? barResults.length;
   } else {
-    const { data } = await supabase.rpc('search_whiskeys', rpcArgs);
+    const [{ data }, { count }] = await Promise.all([
+      supabase.rpc('search_whiskeys', rpcArgs),
+      supabase.from('whiskeys').select('id', { count: 'exact', head: true }),
+    ]);
     whiskeyResults = (data as WhiskeySearchResult[] | null) ?? [];
+    totalCount = count ?? whiskeyResults.length;
   }
 
   const hasResults = type === 'bar' ? barResults.length > 0 : whiskeyResults.length > 0;
@@ -101,6 +112,9 @@ export default async function SearchPage({
             {q && (
               <p className="text-center text-sm font-semibold text-whiskey-100">
                 Found {resultCount} {type === 'bar' ? 'bar' : 'whiskey'}{resultCount !== 1 ? 's' : ''} matching &quot;{q}&quot;
+                {resultCount >= RESULT_LIMIT && (
+                  <span className="font-normal text-whiskey-300"> (showing top {RESULT_LIMIT})</span>
+                )}
               </p>
             )}
             {hasCoordinates && (
@@ -138,9 +152,16 @@ export default async function SearchPage({
           <div className="mb-6 rounded-lg border border-oak-200 bg-white px-5 py-3 text-center shadow-sm">
             <p className="text-sm text-oak-600">
               {hasCoordinates
-                ? `Showing ${resultCount} ${type === 'bar' ? 'bar' : 'whiskey'}${resultCount !== 1 ? 's' : ''} near ${locationName ?? 'your location'} — use the search bar above to filter`
-                : `Showing all ${resultCount} ${type === 'bar' ? 'bar' : 'whiskey'}${resultCount !== 1 ? 's' : ''} — use the search bar above to filter`}
+                ? `Showing ${resultCount} of ${totalCount} ${type === 'bar' ? 'bar' : 'whiskey'}${totalCount !== 1 ? 's' : ''} near ${locationName ?? 'your location'} — use the search bar above to filter`
+                : `Showing ${resultCount} of ${totalCount} ${type === 'bar' ? 'bar' : 'whiskey'}${totalCount !== 1 ? 's' : ''} — use the search bar above to filter`}
             </p>
+            {resultCount < totalCount && (
+              <p className="text-xs text-oak-500 mt-1">
+                <Link href={type === 'bar' ? '/bars' : '/whiskeys'} className="text-whiskey-600 hover:text-whiskey-500 underline underline-offset-2">
+                  Browse all {totalCount} {type === 'bar' ? 'bars' : 'whiskeys'}
+                </Link>
+              </p>
+            )}
           </div>
         )}
 
@@ -162,7 +183,7 @@ export default async function SearchPage({
               <span>{type === 'bar' ? 'Bars' : 'Whiskeys'}</span>
               <span className="text-sm font-normal text-oak-600">({resultCount})</span>
             </h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
               {type === 'bar' &&
                 barResults.map((bar) => (
                   <BarCard

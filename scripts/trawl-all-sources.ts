@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import Anthropic from '@anthropic-ai/sdk';
+import { normalizeWhiskeyName, similarityRatio } from '../src/lib/trawler/normalize';
 
 // Load .env.local
 try {
@@ -351,12 +352,22 @@ async function findOrCreateWhiskey(
   w: ExtractedWhiskey,
   existing: Array<{ id: string; name: string }>
 ): Promise<string | null> {
-  const norm = w.name.toLowerCase().replace(/['']/g, '').trim();
-  const found = existing.find(
-    (e) => e.name.toLowerCase().replace(/['']/g, '').trim() === norm
-  );
-  if (found) return found.id;
+  const normalized = normalizeWhiskeyName(w.name);
+  if (!normalized) return null;
 
+  // Tier 1: exact normalized match
+  const exactMatch = existing.find(
+    (e) => normalizeWhiskeyName(e.name) === normalized
+  );
+  if (exactMatch) return exactMatch.id;
+
+  // Tier 2: fuzzy match (catches typos, minor OCR errors)
+  const fuzzyMatch = existing.find(
+    (e) => similarityRatio(w.name, e.name) >= 0.85
+  );
+  if (fuzzyMatch) return fuzzyMatch.id;
+
+  // No match — create new whiskey
   const resp = await fetch(`${SUPABASE_URL}/rest/v1/whiskeys`, {
     method: 'POST',
     headers: sbWriteHeaders,
@@ -564,7 +575,7 @@ async function extractWhiskeysFromPhoto(
 ): Promise<ExtractedWhiskey[]> {
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 16384,
+    max_tokens: 8192,
     messages: [
       {
         role: 'user',
@@ -582,8 +593,17 @@ Rules:
 - For menus: read prices, age statements, pour sizes carefully
 - For shelf/backbar photos: identify every readable bottle label
 - Be thorough — extract every single spirit you can identify
+
+Name formatting — CRITICAL:
+- Put AGE as a number in the "age" field, NOT in the name. "Macallan 12 Year Old" → name: "Macallan 12", age: 12
+- Put ABV as a number in the "abv" field, NOT in the name. "Ardbeg 10 46%" → name: "Ardbeg 10", abv: 46
+- Strip legal suffixes: remove "Kentucky Straight Bourbon Whiskey", "Single Malt Scotch Whisky", etc.
+- Use canonical names: "The Macallan" → "Macallan", "The GlenDronach" → "GlenDronach"
+- Keep expression names: "Ardbeg Uigeadail", "Lagavulin 16", "Buffalo Trace Single Barrel"
+- Do NOT put proof in name: "Wild Turkey 101" is correct (product name), but "Maker's Mark 90 Proof" → name: "Maker's Mark"
+
 - Return ONLY valid JSON, no markdown:
-{"whiskeys": [{"name": "...", "distillery": "...", "type": "bourbon|scotch|irish|rye|japanese|canadian|single_malt|blended|other", "age": null, "price": null, "pour_size": "...", "notes": "..."}]}
+{"whiskeys": [{"name": "...", "distillery": "...", "type": "bourbon|scotch|irish|rye|japanese|canadian|single_malt|blended|other", "age": null, "abv": null, "price": null, "pour_size": "...", "notes": "..."}]}
 If no spirits are identifiable, return {"whiskeys": []}`,
           },
         ],
@@ -760,27 +780,33 @@ async function scrapeWebsite(
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 16384,
+    max_tokens: 8192,
     system: `You are a whiskey/spirits menu extraction expert. Given text from a bar or restaurant website, extract ALL individual spirit pours.
 
 Rules:
 - Extract individual spirit pours — NOT cocktails or mixed drinks
 - Include bourbon, scotch, Irish whiskey, rye, Japanese whisky, Canadian whisky, single malt, blended, and other spirits
 - Parse prices if available (convert to numeric USD)
-- Parse age statements
-- Parse ABV if listed
 - Identify distillery from context when possible
 - Be thorough — extract every single spirit you can find
 - If no spirits are found, return an empty array
-- Return ONLY valid JSON, no markdown fences`,
+- Return ONLY valid JSON, no markdown fences
+
+Name formatting — CRITICAL:
+- Put AGE as a number in the "age" field, NOT in the name. "Macallan 12 Year Old" → name: "Macallan 12", age: 12
+- Put ABV as a number in the "abv" field, NOT in the name. "Ardbeg 10 46%" → name: "Ardbeg 10", abv: 46
+- Strip legal suffixes: remove "Kentucky Straight Bourbon Whiskey", "Single Malt Scotch Whisky", etc.
+- Use canonical names: "The Macallan" → "Macallan", "The GlenDronach" → "GlenDronach"
+- Keep expression names: "Ardbeg Uigeadail", "Lagavulin 16", "Buffalo Trace Single Barrel"
+- Do NOT put proof in name: "Wild Turkey 101" is correct (product name), but "Maker's Mark 90 Proof" → name: "Maker's Mark"`,
     messages: [
       {
         role: 'user',
         content: `Extract all whiskey/spirits from this website text for "${barName}":
 
-${pageText.slice(0, 50000)}
+${pageText.slice(0, 25000)}
 
-Return JSON: {"whiskeys": [{"name": "...", "distillery": "...", "type": "...", "age": null, "price": null, "pour_size": "...", "notes": "..."}]}`,
+Return JSON: {"whiskeys": [{"name": "...", "distillery": "...", "type": "...", "age": null, "abv": null, "price": null, "pour_size": "...", "notes": "..."}]}`,
       },
     ],
   });
@@ -887,12 +913,33 @@ function deduplicateWhiskeys(sources: SourceResult[]): ExtractedWhiskey[] {
   for (const source of sources) {
     for (const w of source.whiskeys) {
       if (!w.name) continue;
-      const key = w.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (!key) continue;
-      const existing = seen.get(key);
+      const normalized = normalizeWhiskeyName(w.name);
+      if (!normalized) continue;
 
-      if (!existing || source.confidence > existing.confidence) {
-        seen.set(key, { whiskey: w, confidence: source.confidence });
+      // Tier 1: exact normalized match
+      const exact = seen.get(normalized);
+      if (exact) {
+        if (source.confidence > exact.confidence) {
+          seen.set(normalized, { whiskey: w, confidence: source.confidence });
+        }
+        continue;
+      }
+
+      // Tier 2: fuzzy match against existing entries (catches typos, minor variations)
+      let matched = false;
+      for (const [key, entry] of seen) {
+        if (similarityRatio(normalized, key) >= 0.85) {
+          if (source.confidence > entry.confidence) {
+            seen.delete(key);
+            seen.set(normalized, { whiskey: w, confidence: source.confidence });
+          }
+          matched = true;
+          break;
+        }
+      }
+
+      if (!matched) {
+        seen.set(normalized, { whiskey: w, confidence: source.confidence });
       }
     }
   }
@@ -1024,9 +1071,10 @@ async function processBar(
     if (!whiskeyId) continue;
 
     // Use the highest confidence source for this whiskey
+    const wNorm = normalizeWhiskeyName(w.name);
     const bestSource = sources.find((s) =>
       s.whiskeys.some(
-        (sw) => sw.name.toLowerCase().replace(/[^a-z0-9]/g, '') === w.name.toLowerCase().replace(/[^a-z0-9]/g, '')
+        (sw) => normalizeWhiskeyName(sw.name) === wNorm
       )
     );
     const sourceType =

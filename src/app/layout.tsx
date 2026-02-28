@@ -3,9 +3,9 @@ import { LayoutShell } from '@/components/layout-shell';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Find a Dram — Pacific Northwest Whiskey Guide',
+  title: 'Find a Dram — Portland Whiskey Guide',
   description:
-    'Discover whiskies at bars near you in Portland, Seattle, and across the Pacific Northwest.',
+    'Discover whiskies at bars near you across the Portland, Oregon metro area.',
 };
 
 export default function RootLayout({

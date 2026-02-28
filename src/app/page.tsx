@@ -3,6 +3,7 @@ import { SearchBar } from '@/components/features/SearchBar';
 import { LocationPrompt } from '@/components/features/LocationPrompt';
 import { BarCard } from '@/components/features/BarCard';
 import { WhiskeyCard } from '@/components/features/WhiskeyCard';
+import { NearbyBars } from '@/components/features/NearbyBars';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -175,6 +176,11 @@ export default async function HomePage() {
             ))}
           </dl>
         </div>
+      </section>
+
+      {/* ── Nearby Bars (location-aware) ──────────────────────────────── */}
+      <section className="mx-auto max-w-6xl px-4 py-8">
+        <NearbyBars />
       </section>
 
       {/* ── Recent Sightings ──────────────────────────────────────────────── */}

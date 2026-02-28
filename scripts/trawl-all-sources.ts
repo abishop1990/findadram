@@ -9,7 +9,10 @@
  * Usage: npx tsx scripts/trawl-all-sources.ts
  *        npx tsx scripts/trawl-all-sources.ts --skip-discovery   # skip Phase 1, trawl DB bars only
  *        npx tsx scripts/trawl-all-sources.ts --discovery-only    # only discover, don't trawl
+ *        npx tsx scripts/trawl-all-sources.ts --force             # re-process reviews + websites (photos still cached)
+ *        npx tsx scripts/trawl-all-sources.ts --force-all         # ignore ALL cache including photos
  */
+import { createHash } from 'crypto';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import Anthropic from '@anthropic-ai/sdk';
@@ -59,6 +62,10 @@ const sbReadHeaders = {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function sha256(content: string): string {
+  return createHash('sha256').update(content, 'utf-8').digest('hex');
 }
 
 // ---------------------------------------------------------------------------
@@ -168,6 +175,41 @@ interface BarResult {
   mergedWhiskeys: ExtractedWhiskey[];
   totalFound: number;
   linkedToSupabase: number;
+}
+
+interface CachedTrawlJob {
+  source_url: string | null;
+  source_type: string;
+  status: string;
+  scraped_at: string;
+  content_hash: string | null;
+  whiskey_count: number;
+}
+
+interface CacheStats {
+  photosSkippedIrrelevant: number;
+  photosSkippedExtracted: number;
+  photosProcessed: number;
+  reviewsSkippedFresh: number;
+  reviewsProcessed: number;
+  websitesSkippedHash: number;
+  websitesProcessed: number;
+  websiteImagesSkippedCached: number;
+  websiteImagesProcessed: number;
+}
+
+function newCacheStats(): CacheStats {
+  return {
+    photosSkippedIrrelevant: 0,
+    photosSkippedExtracted: 0,
+    photosProcessed: 0,
+    reviewsSkippedFresh: 0,
+    reviewsProcessed: 0,
+    websitesSkippedHash: 0,
+    websitesProcessed: 0,
+    websiteImagesSkippedCached: 0,
+    websiteImagesProcessed: 0,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -335,6 +377,120 @@ async function loadBarsFromDB(): Promise<DbBar[]> {
   );
   if (!resp.ok) throw new Error(`Failed to load bars: ${resp.status}`);
   return resp.json();
+}
+
+// ---------------------------------------------------------------------------
+// Trawl cache — skip already-processed sources
+// ---------------------------------------------------------------------------
+
+const REVIEW_FRESHNESS_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+async function loadTrawlCache(
+  barIds: string[]
+): Promise<Map<string, CachedTrawlJob[]>> {
+  const cache = new Map<string, CachedTrawlJob[]>();
+  const BATCH_SIZE = 50;
+
+  for (let i = 0; i < barIds.length; i += BATCH_SIZE) {
+    const batch = barIds.slice(i, i + BATCH_SIZE);
+    const barIdFilter = batch.map((id) => `"${id}"`).join(',');
+    const url =
+      `${SUPABASE_URL}/rest/v1/trawl_jobs?bar_id=in.(${barIdFilter})` +
+      `&status=eq.completed&select=bar_id,source_url,source_type,status,scraped_at,content_hash,whiskey_count`;
+
+    try {
+      const resp = await fetch(url, { headers: sbReadHeaders });
+      if (!resp.ok) continue;
+      const jobs: Array<CachedTrawlJob & { bar_id: string }> = await resp.json();
+      for (const job of jobs) {
+        const existing = cache.get(job.bar_id) || [];
+        existing.push({
+          source_url: job.source_url,
+          source_type: job.source_type,
+          status: job.status,
+          scraped_at: job.scraped_at,
+          content_hash: job.content_hash,
+          whiskey_count: job.whiskey_count,
+        });
+        cache.set(job.bar_id, existing);
+      }
+    } catch {
+      // Cache load failure is non-fatal — just process everything
+    }
+  }
+
+  return cache;
+}
+
+function checkPhotoCache(
+  photoName: string,
+  barCache: CachedTrawlJob[]
+): 'skip' | 'process' {
+  const match = barCache.find(
+    (j) =>
+      j.source_url === photoName &&
+      (j.source_type === 'google_photo' || j.source_type === 'google_photo_irrelevant')
+  );
+  return match ? 'skip' : 'process';
+}
+
+function checkReviewCache(
+  barCache: CachedTrawlJob[],
+  forceRefresh: boolean
+): 'skip' | 'process' {
+  if (forceRefresh) return 'process';
+  const match = barCache.find((j) => j.source_type === 'google_review');
+  if (!match) return 'process';
+  const age = Date.now() - new Date(match.scraped_at).getTime();
+  return age < REVIEW_FRESHNESS_MS ? 'skip' : 'process';
+}
+
+function checkWebsiteCache(
+  currentHash: string,
+  barCache: CachedTrawlJob[],
+  forceRefresh: boolean
+): 'skip' | 'process' {
+  if (forceRefresh) return 'process';
+  const match = barCache
+    .filter((j) => j.source_type === 'website_scrape')
+    .sort((a, b) => new Date(b.scraped_at).getTime() - new Date(a.scraped_at).getTime())[0];
+  if (!match || !match.content_hash) return 'process';
+  return match.content_hash === currentHash ? 'skip' : 'process';
+}
+
+function checkWebsiteImageCache(
+  imageUrl: string,
+  barCache: CachedTrawlJob[]
+): 'skip' | 'process' {
+  const match = barCache.find(
+    (j) =>
+      j.source_url === imageUrl &&
+      (j.source_type === 'website_image' || j.source_type === 'website_image_irrelevant')
+  );
+  return match ? 'skip' : 'process';
+}
+
+async function recordTrawlJob(
+  barId: string,
+  sourceUrl: string | null,
+  sourceType: string,
+  whiskeyCount: number,
+  contentHash: string | null
+): Promise<void> {
+  await fetch(`${SUPABASE_URL}/rest/v1/trawl_jobs`, {
+    method: 'POST',
+    headers: sbWriteHeaders,
+    body: JSON.stringify({
+      bar_id: barId,
+      source_url: sourceUrl,
+      source_type: sourceType,
+      status: 'completed',
+      whiskey_count: whiskeyCount,
+      content_hash: contentHash,
+      scraped_at: new Date().toISOString(),
+      result: {},
+    }),
+  }).catch(() => {});
 }
 
 // ---------------------------------------------------------------------------
@@ -567,6 +723,70 @@ Respond with JSON only: {"isUseful": true/false, "photoType": "menu"|"shelf"|"bo
   return { isUseful: false, photoType: 'irrelevant', description: 'Classification failed' };
 }
 
+async function classifyPhotoBatch(
+  client: Anthropic,
+  photos: Array<{ base64: string; mimeType: string }>
+): Promise<Array<{ isUseful: boolean; photoType: string; description: string }>> {
+  const content: Anthropic.MessageCreateParams['messages'][0]['content'] = [];
+
+  for (let i = 0; i < photos.length; i++) {
+    content.push({
+      type: 'image',
+      source: { type: 'base64', media_type: toClaudeMime(photos[i].mimeType), data: photos[i].base64 },
+    });
+    content.push({ type: 'text', text: `Photo ${i + 1}` });
+  }
+
+  content.push({
+    type: 'text',
+    text: `Classify each of the ${photos.length} photos above from a bar/restaurant. For EACH photo, determine if it's useful for identifying whiskey/spirits.
+
+Categories:
+- "menu": A printed/displayed menu, drink list, spirits list, or chalkboard menu
+- "shelf": A back bar shelf, bottle display, or liquor wall
+- "bottles": A close-up of bottles or bottle collection
+- "irrelevant": Food, people, decor, exterior, or anything without identifiable spirits
+
+Respond with a JSON array only (one object per photo, in order):
+[{"photo": 1, "isUseful": true/false, "photoType": "menu"|"shelf"|"bottles"|"irrelevant", "description": "brief description"}, ...]`,
+  });
+
+  const response = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1500,
+    messages: [{ role: 'user', content }],
+  });
+
+  const text = response.content
+    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
+    .map((b) => b.text)
+    .join('');
+
+  try {
+    const match = text.match(/\[[\s\S]*\]/);
+    if (match) {
+      const parsed: Array<{ photo?: number; isUseful: boolean; photoType: string; description: string }> =
+        JSON.parse(match[0]);
+      if (parsed.length === photos.length) {
+        return parsed.map((p) => ({
+          isUseful: p.isUseful,
+          photoType: p.photoType,
+          description: p.description,
+        }));
+      }
+    }
+  } catch {
+    /* fall through to fallback */
+  }
+
+  // Fallback: classify individually for any batch that fails parsing
+  const results: Array<{ isUseful: boolean; photoType: string; description: string }> = [];
+  for (const photo of photos) {
+    results.push(await classifyPhoto(client, photo.base64, photo.mimeType));
+  }
+  return results;
+}
+
 async function extractWhiskeysFromPhoto(
   client: Anthropic,
   base64: string,
@@ -609,6 +829,64 @@ If no spirits are identifiable, return {"whiskeys": []}`,
         ],
       },
     ],
+  });
+
+  const text = response.content
+    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
+    .map((b) => b.text)
+    .join('');
+
+  try {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]).whiskeys || [];
+  } catch {
+    /* fall through */
+  }
+  return [];
+}
+
+async function extractWhiskeysFromPhotoBatch(
+  client: Anthropic,
+  photos: Array<{ base64: string; mimeType: string; photoType: string }>,
+  barName: string
+): Promise<ExtractedWhiskey[]> {
+  const content: Anthropic.MessageCreateParams['messages'][0]['content'] = [];
+
+  for (let i = 0; i < photos.length; i++) {
+    content.push({
+      type: 'image',
+      source: { type: 'base64', media_type: toClaudeMime(photos[i].mimeType), data: photos[i].base64 },
+    });
+    content.push({ type: 'text', text: `Photo ${i + 1} (${photos[i].photoType})` });
+  }
+
+  content.push({
+    type: 'text',
+    text: `Extract ALL whiskey/whisky/bourbon/scotch/rye/spirits visible in ALL ${photos.length} images above from "${barName}".
+
+Rules:
+- Extract individual spirit names, NOT cocktails
+- For menus: read prices, age statements, pour sizes carefully
+- For shelf/backbar photos: identify every readable bottle label
+- Be thorough — extract every single spirit you can identify from ALL images
+
+Name formatting — CRITICAL:
+- Put AGE as a number in the "age" field, NOT in the name. "Macallan 12 Year Old" → name: "Macallan 12", age: 12
+- Put ABV as a number in the "abv" field, NOT in the name. "Ardbeg 10 46%" → name: "Ardbeg 10", abv: 46
+- Strip legal suffixes: remove "Kentucky Straight Bourbon Whiskey", "Single Malt Scotch Whisky", etc.
+- Use canonical names: "The Macallan" → "Macallan", "The GlenDronach" → "GlenDronach"
+- Keep expression names: "Ardbeg Uigeadail", "Lagavulin 16", "Buffalo Trace Single Barrel"
+- Do NOT put proof in name: "Wild Turkey 101" is correct (product name), but "Maker's Mark 90 Proof" → name: "Maker's Mark"
+
+- Return ONLY valid JSON, no markdown:
+{"whiskeys": [{"name": "...", "distillery": "...", "type": "bourbon|scotch|irish|rye|japanese|canadian|single_malt|blended|other", "age": null, "abv": null, "price": null, "pour_size": "...", "notes": "..."}]}
+If no spirits are identifiable, return {"whiskeys": []}`,
+  });
+
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 16384,
+    messages: [{ role: 'user', content }],
   });
 
   const text = response.content
@@ -681,13 +959,7 @@ If no specific brands mentioned, return {"whiskeys_mentioned": []}`,
 // Website scraping (Puppeteer + fetch fallback)
 // ---------------------------------------------------------------------------
 
-async function scrapeWebsite(
-  client: Anthropic,
-  barName: string,
-  website: string
-): Promise<ExtractedWhiskey[]> {
-  let pageText: string;
-
+async function fetchWebsiteText(website: string): Promise<string> {
   // Try Puppeteer first for JS-rendered content
   try {
     const puppeteer = await import('puppeteer');
@@ -717,7 +989,7 @@ async function scrapeWebsite(
       });
 
       // Get text from current page
-      pageText = await page.evaluate(() => {
+      let pageText = await page.evaluate(() => {
         document
           .querySelectorAll('script, style, nav, footer, header, noscript')
           .forEach((el) => el.remove());
@@ -740,6 +1012,8 @@ async function scrapeWebsite(
           // Menu page failed, use homepage text
         }
       }
+
+      return pageText;
     } finally {
       await browser.close();
     }
@@ -754,9 +1028,9 @@ async function scrapeWebsite(
         },
         signal: AbortSignal.timeout(20000),
       });
-      if (!resp.ok) return [];
+      if (!resp.ok) return '';
       const html = await resp.text();
-      pageText = html
+      return html
         .replace(/<script[\s\S]*?<\/script>/gi, '')
         .replace(/<style[\s\S]*?<\/style>/gi, '')
         .replace(/<nav[\s\S]*?<\/nav>/gi, '')
@@ -772,12 +1046,16 @@ async function scrapeWebsite(
         .replace(/\s+/g, ' ')
         .trim();
     } catch {
-      return [];
+      return '';
     }
   }
+}
 
-  if (pageText.length < 100) return [];
-
+async function extractWhiskeysFromText(
+  client: Anthropic,
+  barName: string,
+  pageText: string
+): Promise<ExtractedWhiskey[]> {
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 8192,
@@ -832,7 +1110,11 @@ Return JSON: {"whiskeys": [{"name": "...", "distillery": "...", "type": "...", "
 async function scrapeWebsiteImages(
   client: Anthropic,
   barName: string,
-  website: string
+  barId: string,
+  website: string,
+  barCache: CachedTrawlJob[],
+  forceAll: boolean,
+  stats: CacheStats
 ): Promise<ExtractedWhiskey[]> {
   try {
     const puppeteer = await import('puppeteer');
@@ -874,6 +1156,12 @@ async function scrapeWebsiteImages(
       const allWhiskeys: ExtractedWhiskey[] = [];
 
       for (const imgUrl of imageUrls.slice(0, 5)) {
+        // Cache check — website images are immutable
+        if (!forceAll && checkWebsiteImageCache(imgUrl, barCache) === 'skip') {
+          stats.websiteImagesSkippedCached++;
+          continue;
+        }
+
         try {
           const imgResp = await fetch(imgUrl);
           if (!imgResp.ok) continue;
@@ -883,11 +1171,16 @@ async function scrapeWebsiteImages(
 
           // Classify first
           const classification = await classifyPhoto(client, base64, contentType);
-          if (!classification.isUseful) continue;
+          if (!classification.isUseful) {
+            await recordTrawlJob(barId, imgUrl, 'website_image_irrelevant', 0, null);
+            continue;
+          }
 
           console.log(`      Website image: ${classification.photoType} (${classification.description})`);
           const whiskeys = await extractWhiskeysFromPhoto(client, base64, contentType, barName);
           allWhiskeys.push(...whiskeys);
+          stats.websiteImagesProcessed++;
+          await recordTrawlJob(barId, imgUrl, 'website_image', whiskeys.length, null);
           await sleep(1000);
         } catch {
           // Skip failed images
@@ -954,7 +1247,11 @@ function deduplicateWhiskeys(sources: SourceResult[]): ExtractedWhiskey[] {
 async function processBar(
   client: Anthropic,
   bar: DbBar,
-  existingWhiskeys: Array<{ id: string; name: string }>
+  existingWhiskeys: Array<{ id: string; name: string }>,
+  barCache: CachedTrawlJob[],
+  forceRefresh: boolean,
+  forceAll: boolean,
+  stats: CacheStats
 ): Promise<BarResult> {
   const sources: SourceResult[] = [];
 
@@ -966,42 +1263,98 @@ async function processBar(
         await sleep(500);
         const { photos, reviews } = await fetchPlacePhotosAndReviews(placeId);
 
-        // Photos (up to 10)
+        // Photos (up to 10) — batched pipeline: download → classify → extract
         if (photos.length > 0) {
           const photoWhiskeys: ExtractedWhiskey[] = [];
           let menuCount = 0;
           let shelfCount = 0;
 
+          // Phase A: Download all non-cached photos
+          const toProcess: Array<{
+            photoName: string;
+            base64: string;
+            mimeType: string;
+            author: string;
+          }> = [];
+
           for (const photo of photos.slice(0, 10)) {
+            if (!forceAll && checkPhotoCache(photo.name, barCache) === 'skip') {
+              const wasIrrelevant = barCache.find(
+                (j) => j.source_url === photo.name && j.source_type === 'google_photo_irrelevant'
+              );
+              if (wasIrrelevant) stats.photosSkippedIrrelevant++;
+              else stats.photosSkippedExtracted++;
+              continue;
+            }
+
             const downloaded = await downloadPhotoAsBase64(photo.name);
             if (!downloaded) continue;
 
-            const classification = await classifyPhoto(
-              client,
-              downloaded.base64,
-              downloaded.mimeType
-            );
+            toProcess.push({
+              photoName: photo.name,
+              base64: downloaded.base64,
+              mimeType: downloaded.mimeType,
+              author: photo.authorAttributions?.[0]?.displayName || 'unknown',
+            });
+            await sleep(300);
+          }
 
-            if (classification.isUseful) {
-              const author = photo.authorAttributions?.[0]?.displayName || 'unknown';
-              console.log(
-                `      Photo: ${classification.photoType} (${classification.description}) by ${author}`
+          if (toProcess.length > 0) {
+            // Phase B: Batch classify (Haiku, batches of 5)
+            const classified: Array<{
+              photoName: string;
+              base64: string;
+              mimeType: string;
+              author: string;
+              classification: { isUseful: boolean; photoType: string; description: string };
+            }> = [];
+
+            for (let i = 0; i < toProcess.length; i += 5) {
+              const batch = toProcess.slice(i, i + 5);
+              const classifications = await classifyPhotoBatch(
+                client,
+                batch.map((p) => ({ base64: p.base64, mimeType: p.mimeType }))
               );
 
-              const whiskeys = await extractWhiskeysFromPhoto(
+              for (let j = 0; j < batch.length; j++) {
+                classified.push({ ...batch[j], classification: classifications[j] });
+              }
+              if (i + 5 < toProcess.length) await sleep(500);
+            }
+
+            // Separate useful vs irrelevant, record trawl jobs for irrelevant
+            const useful: typeof classified = [];
+            for (const item of classified) {
+              if (item.classification.isUseful) {
+                useful.push(item);
+                console.log(
+                  `      Photo: ${item.classification.photoType} (${item.classification.description}) by ${item.author}`
+                );
+              } else {
+                await recordTrawlJob(bar.id, item.photoName, 'google_photo_irrelevant', 0, null);
+              }
+            }
+
+            // Phase C: Batch extract (single Sonnet call for all useful photos)
+            if (useful.length > 0) {
+              const whiskeys = await extractWhiskeysFromPhotoBatch(
                 client,
-                downloaded.base64,
-                downloaded.mimeType,
+                useful.map((u) => ({
+                  base64: u.base64,
+                  mimeType: u.mimeType,
+                  photoType: u.classification.photoType,
+                })),
                 bar.name
               );
               photoWhiskeys.push(...whiskeys);
 
-              if (classification.photoType === 'menu') menuCount++;
-              else shelfCount++;
-
-              await sleep(1000);
+              for (const item of useful) {
+                stats.photosProcessed++;
+                if (item.classification.photoType === 'menu') menuCount++;
+                else shelfCount++;
+                await recordTrawlJob(bar.id, item.photoName, 'google_photo', whiskeys.length, null);
+              }
             }
-            await sleep(500);
           }
 
           if (photoWhiskeys.length > 0) {
@@ -1016,14 +1369,22 @@ async function processBar(
 
         // Reviews
         if (reviews.length > 0) {
-          const reviewWhiskeys = await extractWhiskeysFromReviews(client, reviews, bar.name);
-          if (reviewWhiskeys.length > 0) {
-            sources.push({
-              source: 'google_review',
-              whiskeys: reviewWhiskeys,
-              confidence: 0.5,
-              details: `${reviews.length} reviews, ${reviewWhiskeys.length} mentions`,
-            });
+          const reviewAction = checkReviewCache(barCache, forceRefresh);
+          if (reviewAction === 'skip') {
+            console.log(`    Reviews: skipped (fresh cache)`);
+            stats.reviewsSkippedFresh++;
+          } else {
+            const reviewWhiskeys = await extractWhiskeysFromReviews(client, reviews, bar.name);
+            stats.reviewsProcessed++;
+            if (reviewWhiskeys.length > 0) {
+              sources.push({
+                source: 'google_review',
+                whiskeys: reviewWhiskeys,
+                confidence: 0.5,
+                details: `${reviews.length} reviews, ${reviewWhiskeys.length} mentions`,
+              });
+            }
+            await recordTrawlJob(bar.id, null, 'google_review', reviewWhiskeys.length, null);
           }
         }
       }
@@ -1035,18 +1396,34 @@ async function processBar(
   // Source 2: Website scrape (text)
   if (bar.website) {
     try {
-      const websiteWhiskeys = await scrapeWebsite(client, bar.name, bar.website);
-      if (websiteWhiskeys.length > 0) {
-        sources.push({
-          source: 'website',
-          whiskeys: websiteWhiskeys,
-          confidence: 0.8,
-          details: `${websiteWhiskeys.length} spirits from website text`,
-        });
+      const pageText = await fetchWebsiteText(bar.website);
+
+      if (pageText.length >= 100) {
+        const hash = sha256(pageText);
+        const websiteAction = checkWebsiteCache(hash, barCache, forceRefresh);
+
+        if (websiteAction === 'skip') {
+          console.log(`    Website: skipped (hash match)`);
+          stats.websitesSkippedHash++;
+        } else {
+          const websiteWhiskeys = await extractWhiskeysFromText(client, bar.name, pageText);
+          stats.websitesProcessed++;
+          if (websiteWhiskeys.length > 0) {
+            sources.push({
+              source: 'website',
+              whiskeys: websiteWhiskeys,
+              confidence: 0.8,
+              details: `${websiteWhiskeys.length} spirits from website text`,
+            });
+          }
+          await recordTrawlJob(bar.id, bar.website, 'website_scrape', websiteWhiskeys.length, hash);
+        }
       }
 
       // Source 3: Website images (menu photos embedded in pages)
-      const imageWhiskeys = await scrapeWebsiteImages(client, bar.name, bar.website);
+      const imageWhiskeys = await scrapeWebsiteImages(
+        client, bar.name, bar.id, bar.website, barCache, forceAll, stats
+      );
       if (imageWhiskeys.length > 0) {
         sources.push({
           source: 'website' as const,
@@ -1106,6 +1483,8 @@ async function main() {
   const startTime = Date.now();
   const skipDiscovery = process.argv.includes('--skip-discovery');
   const discoveryOnly = process.argv.includes('--discovery-only');
+  const forceRefresh = process.argv.includes('--force');
+  const forceAll = process.argv.includes('--force-all');
   const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
 
   console.log('=== Multi-Source Trawl — Portland/Vancouver Metro ===\n');
@@ -1145,6 +1524,21 @@ async function main() {
   const existingWhiskeys = await getExistingWhiskeys();
   console.log(`${existingWhiskeys.length} existing whiskeys in DB\n`);
 
+  // Phase 2.5: Load trawl cache
+  console.log('=== PHASE 2.5: Loading trawl cache ===\n');
+  const barIds = bars.map((b) => b.id);
+  const trawlCache = await loadTrawlCache(barIds);
+  const totalCached = Array.from(trawlCache.values()).reduce((sum, jobs) => sum + jobs.length, 0);
+  console.log(`Loaded ${totalCached} cached trawl jobs for ${trawlCache.size} bars\n`);
+
+  if (forceAll) {
+    console.log('--force-all: ignoring ALL cache (including photos)\n');
+  } else if (forceRefresh) {
+    console.log('--force: re-processing reviews and websites (photos still cached)\n');
+  }
+
+  const stats = newCacheStats();
+
   // Phase 3: Trawl all bars
   console.log(`=== PHASE 3: Trawling ${bars.length} bars (all sources) ===\n`);
   const results: BarResult[] = [];
@@ -1153,11 +1547,12 @@ async function main() {
 
   for (let i = 0; i < bars.length; i++) {
     const bar = bars[i];
-    console.log(`[${i + 1}/${bars.length}] ${bar.name}`);
+    const barCache = trawlCache.get(bar.id) || [];
+    console.log(`[${i + 1}/${bars.length}] ${bar.name}${barCache.length > 0 ? ` (${barCache.length} cached)` : ''}`);
 
     try {
       const result = await Promise.race([
-        processBar(client, bar, existingWhiskeys),
+        processBar(client, bar, existingWhiskeys, barCache, forceRefresh || forceAll, forceAll, stats),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Bar timeout (90s)')), BAR_TIMEOUT_MS)
         ),
@@ -1237,12 +1632,40 @@ async function main() {
   console.log(`  Website scrape: ${bySource.website}`);
   console.log('');
 
+  // Cache stats
+  const totalSkipped =
+    stats.photosSkippedIrrelevant + stats.photosSkippedExtracted +
+    stats.reviewsSkippedFresh +
+    stats.websitesSkippedHash +
+    stats.websiteImagesSkippedCached;
+  const totalProcessed =
+    stats.photosProcessed + stats.reviewsProcessed +
+    stats.websitesProcessed + stats.websiteImagesProcessed;
+
+  console.log('Cache stats:');
+  console.log(`  Photos: ${stats.photosSkippedIrrelevant} skipped (irrelevant), ${stats.photosSkippedExtracted} skipped (extracted), ${stats.photosProcessed} processed`);
+  console.log(`  Reviews: ${stats.reviewsSkippedFresh} skipped (fresh), ${stats.reviewsProcessed} processed`);
+  console.log(`  Websites: ${stats.websitesSkippedHash} skipped (hash match), ${stats.websitesProcessed} processed`);
+  console.log(`  Website images: ${stats.websiteImagesSkippedCached} skipped (cached), ${stats.websiteImagesProcessed} processed`);
+  console.log(`  Total: ${totalSkipped} skipped, ${totalProcessed} processed`);
+
+  // Estimated savings
+  const photoSavings = (stats.photosSkippedIrrelevant * 0.001) + (stats.photosSkippedExtracted * 0.051);
+  const reviewSavings = stats.reviewsSkippedFresh * 0.005;
+  const websiteSavings = stats.websitesSkippedHash * 0.10;
+  const webImageSavings = stats.websiteImagesSkippedCached * 0.051;
+  const totalSavings = photoSavings + reviewSavings + websiteSavings + webImageSavings;
+  if (totalSavings > 0) {
+    console.log(`  Estimated savings: ~$${totalSavings.toFixed(3)}`);
+  }
+  console.log('');
+
   const sorted = [...results].sort((a, b) => b.totalFound - a.totalFound);
   console.log('Top bars by whiskey count:');
   for (const r of sorted.slice(0, 15)) {
     if (r.totalFound === 0) break;
     const sourceSummary = r.sources.map((s) => `${s.source}:${s.whiskeys.length}`).join(', ');
-    console.log(`  ${r.bar.name}: ${r.totalFound} (${sourceSummary})`);
+    console.log(`  ${r.barName}: ${r.totalFound} (${sourceSummary})`);
   }
 
   // Whiskeys in DB after this run

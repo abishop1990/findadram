@@ -19,6 +19,10 @@ interface ClaimWithBar extends BarClaim {
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
+function oneWeekAgoISO(): string {
+  return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+}
+
 function timeAgo(dateString: string): string {
   const seconds = Math.floor((Date.now() - new Date(dateString).getTime()) / 1000);
   if (seconds < 60) return 'just now';
@@ -99,7 +103,7 @@ export default async function DashboardPage() {
           .from('sightings')
           .select('id', { count: 'exact', head: true })
           .eq('bar_id', barId)
-          .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+          .gte('created_at', oneWeekAgoISO()),
       ]);
       return {
         ...claim.bar,

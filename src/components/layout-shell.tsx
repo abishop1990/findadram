@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: '/search', label: 'Search' },
   { href: '/bars', label: 'Bars' },
   { href: '/whiskeys', label: 'Whiskeys' },
+  { href: '/bottles', label: 'Bottles' },
   { href: '/submit', label: 'Submit Menu' },
 ];
 
@@ -39,7 +40,7 @@ function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden sm:flex items-center gap-1" aria-label="Primary navigation">
-          {NAV_LINKS.slice(0, 4).map(({ href, label }) => {
+          {NAV_LINKS.slice(0, 5).map(({ href, label }) => {
             const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
             return (
               <Link

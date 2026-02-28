@@ -1,7 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
-import { Badge } from '@/components/ui/Badge';
 import { WhiskeyMenuEditor } from '@/components/features/WhiskeyMenuEditor';
 import type { Whiskey } from '@/types/database';
 

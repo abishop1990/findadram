@@ -33,6 +33,14 @@ export interface LiquorStoreResult {
   phone?: string;
   /** Store hours string, if available */
   storeHours?: string;
+  /** Product name (e.g. "BUFFALO TRACE BOURBON") — present for catalog-level results */
+  productName?: string;
+  /** Liquor category (e.g. "DOMESTIC WHISKEY|STRAIGHT|SMALL BATCH") */
+  category?: string;
+  /** Proof value (e.g. 90.0) */
+  proof?: number;
+  /** OLCC item code */
+  itemCode?: string;
 }
 
 /**

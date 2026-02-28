@@ -3,6 +3,7 @@
  * Fetches real menu pages, extracts whiskey data via Claude, outputs results.
  *
  * Usage: npx tsx scripts/trawl-portland.ts
+ *        npx tsx scripts/trawl-portland.ts --skip-discovery
  */
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
@@ -38,14 +39,23 @@ try {
   // rely on existing env
 }
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const writeKey = SUPABASE_SERVICE_KEY || SUPABASE_ANON_KEY;
+const sbWriteHeaders = { 'apikey': writeKey!, 'Authorization': `Bearer ${writeKey}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+const sbReadHeaders = { 'apikey': SUPABASE_ANON_KEY!, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` };
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 interface BarTarget {
+  id: string;
   name: string;
-  menuUrl: string;
-  website: string;
+  menuUrl: string | null;
+  website: string | null;
 }
 
 interface ExtractedWhiskey {
@@ -70,159 +80,124 @@ interface TrawlResult {
 }
 
 // ---------------------------------------------------------------------------
-// Portland bars with known online menus
+// Database-driven target loading
 // ---------------------------------------------------------------------------
 
-const TARGETS: BarTarget[] = [
-  // --- Original 9 targets ---
-  {
-    name: 'Scotch Lodge',
-    menuUrl: 'https://www.scotchlodge.com/menus',
-    website: 'https://www.scotchlodge.com',
-  },
-  {
-    name: 'Hey Love',
-    menuUrl: 'https://www.heylovepdx.com/beverage',
-    website: 'https://www.heylovepdx.com',
-  },
-  {
-    name: 'Hale Pele',
-    menuUrl: 'https://www.halepele.com/menu',
-    website: 'https://www.halepele.com',
-  },
-  {
-    name: 'Bible Club PDX',
-    menuUrl: 'https://bibleclubpdx.com/home',
-    website: 'https://bibleclubpdx.com',
-  },
-  {
-    name: 'Bacchus Bar',
-    menuUrl: 'https://bacchusbarpdx.com/menus',
-    website: 'https://bacchusbarpdx.com',
-  },
-  // Deadshot permanently closed Nov 2025 — removed
-  {
-    name: 'The Old Gold',
-    menuUrl: 'https://www.drinkinoregon.com',
-    website: 'https://www.drinkinoregon.com',
-  },
-  {
-    name: 'Swine Moonshine & Whiskey Bar',
-    menuUrl: 'https://swinemoonshine.com/portland-swine-moonshine-and-whiskey-bar-drink-menu',
-    website: 'https://swinemoonshine.com',
-  },
-  // Westward Whiskey tasting room temp closed Feb 2026 — removed
-  {
-    name: 'Interurban',
-    menuUrl: 'https://www.interurbanpdx.com',
-    website: 'https://www.interurbanpdx.com',
-  },
-  {
-    name: 'Teardrop Lounge',
-    menuUrl: 'https://www.teardroplounge.com',
-    website: 'https://www.teardroplounge.com',
-  },
+async function loadTargetsFromDB(): Promise<BarTarget[]> {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error('Missing SUPABASE env vars — cannot load bars from database');
+    process.exit(1);
+  }
 
-  // --- New targets ---
+  const resp = await fetch(
+    `${SUPABASE_URL}/rest/v1/bars?select=id,name,website,metadata&state=eq.OR&website=not.is.null`,
+    { headers: sbReadHeaders }
+  );
+  if (!resp.ok) throw new Error(`Failed to load bars: ${resp.status}`);
 
-  // Multnomah Whiskey Library — SW Portland, 1500+ bottle collection
-  // Menu is served table-side; website homepage lists featured spirits
-  {
-    name: 'Multnomah Whiskey Library',
-    menuUrl: 'https://mwlpdx.com/',
-    website: 'https://mwlpdx.com',
-  },
+  const bars = await resp.json() as Array<{
+    id: string;
+    name: string;
+    website: string | null;
+    metadata: Record<string, unknown>;
+  }>;
 
-  // Pepe Le Moko — downtown speakeasy basement of Ace Hotel
-  // Website may be parked/minimal; attempt the root URL
-  {
-    name: 'Pepe Le Moko',
-    menuUrl: 'https://pepelemokopdx.com/',
-    website: 'https://pepelemokopdx.com',
-  },
+  return bars.map(bar => ({
+    id: bar.id,
+    name: bar.name,
+    menuUrl: (bar.metadata?.menu_url as string) || null,
+    website: bar.website,
+  }));
+}
 
-  // Doug Fir Lounge — relocated from E Burnside; reopening delayed as of Feb 2026
-  // Attempting website in case partial menu content is available
-  {
-    name: 'Doug Fir Lounge',
-    menuUrl: 'https://www.dougfirlounge.com/',
-    website: 'https://www.dougfirlounge.com',
-  },
+/**
+ * Crawl a bar's homepage to find the best menu/drinks page URL.
+ * Scores links by keywords related to menus and spirits.
+ */
+async function discoverMenuUrl(website: string): Promise<string | null> {
+  try {
+    const response = await fetchWithRetry(website);
+    if (!response.ok) return null;
+    const html = await response.text();
 
-  // Horse Brass Pub — legendary SE Belmont British pub, established 1976
-  {
-    name: 'Horse Brass Pub',
-    menuUrl: 'https://horsebrass.com/menu/',
-    website: 'https://horsebrass.com',
-  },
+    // Extract all links from the page
+    const linkRe = /<a[^>]+href=["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+    const candidates: Array<{ url: string; score: number }> = [];
 
-  // Expatriate — NE Portland; closed permanently Feb 2026 per Yelp
-  // Kept in list to attempt and document via error
-  {
-    name: 'Expatriate',
-    menuUrl: 'http://expatriatepdx.com/cocktails',
-    website: 'http://expatriatepdx.com',
-  },
+    const MENU_KEYWORDS = [
+      { pattern: /\bmenu\b/i, weight: 10 },
+      { pattern: /\bdrinks?\b/i, weight: 8 },
+      { pattern: /\bspirits?\b/i, weight: 9 },
+      { pattern: /\bwhisk(?:e?y|ies)\b/i, weight: 10 },
+      { pattern: /\bbourbon\b/i, weight: 8 },
+      { pattern: /\bcocktails?\b/i, weight: 7 },
+      { pattern: /\bbeverage\b/i, weight: 8 },
+      { pattern: /\bwine.?list\b/i, weight: 5 },
+      { pattern: /\bbar.?menu\b/i, weight: 9 },
+      { pattern: /\bfood.?(?:and|&).?drink\b/i, weight: 7 },
+    ];
 
-  // Shift Drinks — Pearl District; closed Sep 2025 per Yelp
-  // Kept in list; attempt in case website still has menu archived
-  {
-    name: 'Shift Drinks',
-    menuUrl: 'https://shiftdrinkspdx.com/',
-    website: 'https://shiftdrinkspdx.com',
-  },
+    let match: RegExpExecArray | null;
+    while ((match = linkRe.exec(html)) !== null) {
+      const href = match[1];
+      const linkText = match[2].replace(/<[^>]+>/g, '').trim();
 
-  // Luc Lac Vietnamese Kitchen — downtown, known for cocktail program
-  {
-    name: 'Luc Lac',
-    menuUrl: 'https://luclackitchen.com/',
-    website: 'https://luclackitchen.com',
-  },
+      // Build absolute URL
+      let absoluteUrl: string;
+      try {
+        absoluteUrl = new URL(href, website).href;
+      } catch {
+        continue;
+      }
 
-  // Raven & Rose — permanently closed 2021; kept to document via error
-  {
-    name: 'Raven & Rose',
-    menuUrl: 'https://www.ravenandrosepdx.com/',
-    website: 'https://www.ravenandrosepdx.com',
-  },
+      // Only follow links on the same domain
+      try {
+        if (new URL(absoluteUrl).hostname !== new URL(website).hostname) continue;
+      } catch {
+        continue;
+      }
 
-  // Kachka — SE Portland, Russian-themed; 50+ vodka selections, curated spirits
-  {
-    name: 'Kachka',
-    menuUrl: 'https://www.kachkapdx.com/drink-menu',
-    website: 'https://www.kachkapdx.com',
-  },
+      // Score this link
+      let score = 0;
+      const textToCheck = linkText + ' ' + href;
+      for (const kw of MENU_KEYWORDS) {
+        if (kw.pattern.test(textToCheck)) {
+          score += kw.weight;
+        }
+      }
 
-  // Bit House Saloon — SE; closed Feb 2026 per Yelp; kept to attempt/document
-  {
-    name: 'Bit House Saloon',
-    menuUrl: 'https://www.bithousesaloon.com/',
-    website: 'https://www.bithousesaloon.com',
-  },
+      if (score > 0) {
+        candidates.push({ url: absoluteUrl, score });
+      }
+    }
 
-  // Victoria Bar — N Portland (Albina Ave, near Alberta); mostly-vegan cocktail bar
-  // Note: website is victoriapdx.com, not victoriabarpdx.com
-  {
-    name: 'Victoria Bar',
-    menuUrl: 'https://victoriapdx.com/menu/',
-    website: 'https://victoriapdx.com',
-  },
+    if (candidates.length === 0) return null;
 
-  // Park Avenue Fine Spirits — bottle shop with tasting bar, SE Portland
-  // Note: "Park Avenue Fine Wines" at SW Park Ave appears closed; attempting the user-specified name
-  {
-    name: 'Park Avenue Fine Spirits',
-    menuUrl: 'https://www.parkavenuefinespirits.com/',
-    website: 'https://www.parkavenuefinespirits.com',
-  },
+    // Sort by score descending, return highest
+    candidates.sort((a, b) => b.score - a.score);
+    return candidates[0].url;
+  } catch {
+    return null;
+  }
+}
 
-  // Stag PDX — NE/Pearl area gay bar; craft spirits and whiskey program
-  {
-    name: 'Stag PDX',
-    menuUrl: 'https://www.stagportland.com/',
-    website: 'https://www.stagportland.com',
-  },
-];
+/**
+ * Save discovered menu URL back to the bar's metadata for future runs.
+ */
+async function saveMenuUrl(barId: string, menuUrl: string): Promise<void> {
+  if (!SUPABASE_URL) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/bars?id=eq.${barId}`, {
+      method: 'PATCH',
+      headers: sbWriteHeaders,
+      body: JSON.stringify({
+        metadata: { menu_url: menuUrl },
+      }),
+    });
+  } catch {
+    // Non-critical — log but don't fail
+  }
+}
 
 // ---------------------------------------------------------------------------
 // HTML fetch + smart extraction
@@ -563,6 +538,63 @@ function writeSummary(results: TrawlResult[], elapsed: string, outPath: string):
 }
 
 // ---------------------------------------------------------------------------
+// Supabase write helpers
+// ---------------------------------------------------------------------------
+
+async function getExistingWhiskeys(): Promise<Array<{ id: string; name: string }>> {
+  if (!SUPABASE_URL) return [];
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/whiskeys?select=id,name`, { headers: sbReadHeaders });
+  return resp.json();
+}
+
+async function findOrCreateWhiskey(
+  w: ExtractedWhiskey,
+  existing: Array<{ id: string; name: string }>
+): Promise<string | null> {
+  const norm = w.name.toLowerCase().replace(/['']/g, '').trim();
+  const found = existing.find(e => e.name.toLowerCase().replace(/['']/g, '').trim() === norm);
+  if (found) return found.id;
+
+  if (!SUPABASE_URL) return null;
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/whiskeys`, {
+    method: 'POST',
+    headers: sbWriteHeaders,
+    body: JSON.stringify({
+      name: w.name, distillery: w.distillery || null, type: w.type || 'other',
+      age: w.age || null, abv: w.abv || null, description: w.notes || null,
+      region: null, country: null, image_url: null,
+    }),
+  });
+  if (!resp.ok) return null;
+  const data = await resp.json();
+  if (data?.[0]) {
+    existing.push({ id: data[0].id, name: w.name });
+    return data[0].id;
+  }
+  return null;
+}
+
+async function linkWhiskeyToBar(
+  barId: string,
+  whiskeyId: string,
+  w: ExtractedWhiskey,
+): Promise<boolean> {
+  if (!SUPABASE_URL) return false;
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/bar_whiskeys`, {
+    method: 'POST',
+    headers: { ...sbWriteHeaders, 'Prefer': 'return=minimal,resolution=merge-duplicates' },
+    body: JSON.stringify({
+      bar_id: barId, whiskey_id: whiskeyId,
+      price: w.price || null, pour_size: w.pour_size || null,
+      available: true, notes: w.notes || null,
+      source_type: 'website_trawl', confidence: 0.75,
+      is_stale: false,
+    }),
+  });
+  return resp.ok;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -573,28 +605,67 @@ async function main() {
     process.exit(1);
   }
 
+  const skipDiscovery = process.argv.includes('--skip-discovery');
   const client = new Anthropic({ apiKey });
   const results: TrawlResult[] = [];
   const startTime = Date.now();
 
-  console.log(`\nTrawling ${TARGETS.length} Portland bar websites...\n`);
+  // Load bars from database
+  console.log('\nLoading Portland bars from database...');
+  const targets = await loadTargetsFromDB();
+  console.log(`Found ${targets.length} bars with websites\n`);
 
-  for (let i = 0; i < TARGETS.length; i++) {
-    const bar = TARGETS[i];
+  if (targets.length === 0) {
+    console.log('No bars with websites found. Run google-places-enrich.mjs first.');
+    process.exit(0);
+  }
+
+  // Load existing whiskeys for dedup
+  const existingWhiskeys = await getExistingWhiskeys();
+  console.log(`${existingWhiskeys.length} existing whiskeys in DB\n`);
+
+  // Menu URL discovery phase
+  if (!skipDiscovery) {
+    console.log('=== Discovering menu URLs ===\n');
+    for (const target of targets) {
+      if (target.menuUrl) continue; // Already has a menu URL
+      if (!target.website) continue;
+
+      console.log(`  ${target.name}: discovering menu page...`);
+      const menuUrl = await discoverMenuUrl(target.website);
+      if (menuUrl) {
+        console.log(`    Found: ${menuUrl}`);
+        target.menuUrl = menuUrl;
+        await saveMenuUrl(target.id, menuUrl);
+      } else {
+        console.log(`    No menu page found, will use homepage`);
+        target.menuUrl = target.website;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    console.log('');
+  }
+
+  // Trawl phase
+  const trawlTargets = targets.filter(t => t.menuUrl || t.website);
+  console.log(`Trawling ${trawlTargets.length} bar websites...\n`);
+
+  for (let i = 0; i < trawlTargets.length; i++) {
+    const bar = trawlTargets[i];
+    const url = bar.menuUrl || bar.website!;
     const barStart = Date.now();
-    console.log(`[${i + 1}/${TARGETS.length}] ${bar.name}`);
-    console.log(`  URL: ${bar.menuUrl}`);
+    console.log(`[${i + 1}/${trawlTargets.length}] ${bar.name}`);
+    console.log(`  URL: ${url}`);
 
     try {
-      // Fetch (with 1 retry on failure)
       console.log('  Fetching page...');
-      const menuText = await fetchMenuPage(bar.menuUrl);
+      const menuText = await fetchMenuPage(url);
       console.log(`  Got ${menuText.length} chars of text`);
 
       if (menuText.length < 50) {
         console.log('  Skipping — too little content');
         results.push({
-          bar,
+          bar: { ...bar, menuUrl: url, website: bar.website || url },
           whiskeys: [],
           scrapedAt: new Date().toISOString(),
           rawTextLength: menuText.length,
@@ -605,7 +676,6 @@ async function main() {
         continue;
       }
 
-      // Extract
       console.log('  Extracting spirits via Claude...');
       const whiskeys = await extractWhiskeys(client, bar.name, menuText);
       console.log(`  Found ${whiskeys.length} spirits (${Date.now() - barStart}ms)`);
@@ -617,22 +687,33 @@ async function main() {
         if (whiskeys.length > 5) {
           console.log(`    ... and ${whiskeys.length - 5} more`);
         }
+
+        // Write to Supabase
+        let linked = 0;
+        for (const w of whiskeys) {
+          if (!w.name) continue;
+          const whiskeyId = await findOrCreateWhiskey(w, existingWhiskeys);
+          if (!whiskeyId) continue;
+          const ok = await linkWhiskeyToBar(bar.id, whiskeyId, w);
+          if (ok) linked++;
+        }
+        console.log(`  Linked ${linked}/${whiskeys.length} to Supabase`);
       }
 
       const scrapedAt = new Date().toISOString();
       results.push({
-        bar,
+        bar: { ...bar, menuUrl: url, website: bar.website || url },
         whiskeys,
         scrapedAt,
         rawTextLength: menuText.length,
         contentHash: sha256(menuText),
-        sourceAttribution: buildAttribution(bar.name, bar.menuUrl, scrapedAt.split('T')[0]),
+        sourceAttribution: buildAttribution(bar.name, url, scrapedAt.split('T')[0]),
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.log(`  ERROR: ${message}`);
       results.push({
-        bar,
+        bar: { ...bar, menuUrl: url, website: bar.website || url },
         whiskeys: [],
         scrapedAt: new Date().toISOString(),
         rawTextLength: 0,
@@ -642,8 +723,7 @@ async function main() {
       });
     }
 
-    // Rate limit: 2s delay between sites (polite but faster than 3s)
-    if (i < TARGETS.length - 1) {
+    if (i < trawlTargets.length - 1) {
       console.log('  Waiting 2s...\n');
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
@@ -666,7 +746,7 @@ async function main() {
     console.log(`  ${r.bar.name}: ${status}`);
   }
 
-  // Write JSON results for the seed generator
+  // Write JSON results (secondary artifact for debugging)
   const jsonOutPath = resolve(process.cwd(), 'scripts/trawl-results.json');
   writeFileSync(jsonOutPath, JSON.stringify(results, null, 2));
   console.log(`\nJSON results written to ${jsonOutPath}`);

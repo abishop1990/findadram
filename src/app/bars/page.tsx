@@ -16,10 +16,10 @@ export default async function BarsPage() {
       <section className="bg-gradient-to-br from-whiskey-950 via-whiskey-900 to-whiskey-800">
         <div className="mx-auto max-w-6xl px-4 py-12 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-whiskey-100 mb-3">
-            Portland Bars
+            Bars
           </h1>
           <p className="text-whiskey-300 mb-6 max-w-lg mx-auto">
-            Browse all bars in the Portland metro area. Click any bar to see their full whiskey menu.
+            Browse whiskey bars across the Pacific Northwest. Click any bar to see their full whiskey menu.
           </p>
           <div className="flex justify-center">
             <SearchBar defaultType="bar" />
@@ -51,7 +51,7 @@ export default async function BarsPage() {
         ) : (
           <div className="text-center py-16">
             <p className="text-whiskey-800 text-lg font-medium">No bars found</p>
-            <p className="text-oak-500 mt-1">Check back soon — we&apos;re adding more Portland bars.</p>
+            <p className="text-oak-500 mt-1">Check back soon — we&apos;re adding more bars.</p>
           </div>
         )}
       </section>

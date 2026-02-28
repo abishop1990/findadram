@@ -140,11 +140,11 @@ export default async function HomePage() {
             <svg className="h-3 w-3 text-whiskey-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433 5.737 5.737 0 00.28.14l.019.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
             </svg>
-            Portland, OR
+            Pacific Northwest
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-whiskey-100 mb-3 sm:mb-5 tracking-tight leading-tight">
-            Discover Portland&apos;s<br className="hidden sm:block" /> Best Whiskey
+            Discover the Pacific Northwest&apos;s<br className="hidden sm:block" /> Best Whiskey
           </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-whiskey-300 mb-2 sm:mb-3 max-w-xl mx-auto leading-relaxed">
@@ -279,7 +279,7 @@ export default async function HomePage() {
                 id="bars-heading"
                 className="text-2xl font-bold text-whiskey-900"
               >
-                Explore Portland Bars
+                Explore Bars
               </h2>
               <p className="text-sm text-oak-500 mt-0.5">Top spots for whiskey in the city</p>
             </div>
@@ -322,7 +322,7 @@ export default async function HomePage() {
               >
                 Popular Whiskeys
               </h2>
-              <p className="text-sm text-oak-500 mt-0.5">Spotted at Portland bars this month</p>
+              <p className="text-sm text-oak-500 mt-0.5">Spotted at bars this month</p>
             </div>
             <Link
               href="/whiskeys"
@@ -366,7 +366,7 @@ export default async function HomePage() {
             Know a bar&apos;s whiskey menu?
           </h2>
           <p className="text-whiskey-300 max-w-lg mx-auto mb-8 leading-relaxed">
-            Help the Portland whiskey community by submitting a bar&apos;s menu.
+            Help the whiskey community by submitting a bar&apos;s menu.
             We&apos;ll catalog every bottle, price, and pour size so others can
             find their next dram.
           </p>
@@ -385,7 +385,7 @@ export default async function HomePage() {
               href="/bars"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
             >
-              Browse Portland Bars
+              Browse Bars
             </Link>
           </div>
         </div>

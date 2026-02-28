@@ -24,29 +24,30 @@ try {
 } catch { /* ignore */ }
 
 // ---------------------------------------------------------------------------
-// Portland Metro geofence
-// Covers: Portland OR, Vancouver WA, Beaverton, Tigard, Lake Oswego,
-//         Milwaukie, Gresham, Hillsboro, Oregon City
-// Excludes: Portland ME, Vancouver BC, Salem, Eugene
+// Pacific Northwest service area geofence
+// Covers: Portland OR, Vancouver WA, Olympia WA, Tacoma WA, Seattle WA,
+//         Bellevue WA, Beaverton OR, Hillsboro OR, Gresham OR, Oregon City OR
+// Excludes: Portland ME, Vancouver BC (49.28°N — well north of 47.75), Salem, Eugene
 // ---------------------------------------------------------------------------
 
-const PORTLAND_METRO_BOUNDS = {
-  north: 45.70,   // north edge of Vancouver WA
-  south: 45.35,   // south of Oregon City
-  east: -122.40,  // east of Gresham
-  west: -122.90,  // west of Hillsboro
-  center: { lat: 45.5152, lng: -122.6784 },
-  radiusKm: 40,   // ~25 miles
+const SERVICE_AREA_BOUNDS = {
+  north: 47.75,    // north edge of Seattle metro / Everett area
+  south: 45.35,    // south of Oregon City
+  east:  -122.10,  // east of Bellevue / Issaquah
+  west:  -122.90,  // west of Hillsboro / Tacoma
 };
 
-function isInPortlandMetro(lat: number, lng: number): boolean {
+function isInServiceArea(lat: number, lng: number): boolean {
   return (
-    lat >= PORTLAND_METRO_BOUNDS.south &&
-    lat <= PORTLAND_METRO_BOUNDS.north &&
-    lng >= PORTLAND_METRO_BOUNDS.west &&
-    lng <= PORTLAND_METRO_BOUNDS.east
+    lat >= SERVICE_AREA_BOUNDS.south &&
+    lat <= SERVICE_AREA_BOUNDS.north &&
+    lng >= SERVICE_AREA_BOUNDS.west &&
+    lng <= SERVICE_AREA_BOUNDS.east
   );
 }
+
+/** Backwards-compatible alias. */
+const isInPortlandMetro = isInServiceArea;
 
 // ---------------------------------------------------------------------------
 // Portland bar data (coordinates + metadata)

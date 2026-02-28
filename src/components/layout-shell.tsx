@@ -34,7 +34,7 @@ function Header() {
             Find a Dram
           </span>
           <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-whiskey-500 transition-colors duration-200 group-hover:text-whiskey-400">
-            Portland&apos;s Whiskey Guide
+            Pacific Northwest Whiskey Guide
           </span>
         </Link>
 
@@ -184,7 +184,7 @@ function Footer() {
             </h3>
             <p className="text-sm leading-relaxed text-whiskey-500">
               Find a Dram helps whiskey lovers discover what&apos;s on the shelf at bars
-              across the Portland metro area — before you walk through the door.
+              across the Pacific Northwest — Portland, Vancouver WA, and Seattle — before you walk through the door.
             </p>
           </div>
 
@@ -216,19 +216,18 @@ function Footer() {
               className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-whiskey-300"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
-              Portland Focus
+              Pacific Northwest
             </h3>
             <p className="text-sm leading-relaxed text-whiskey-500">
-              We&apos;re focused exclusively on the Portland, OR metro area — from the Pearl
-              District to Southeast, Northeast, and beyond. Hyper-local by design.
+              We cover Portland OR, Vancouver WA, and the Seattle metro area. Hyper-local by design.
             </p>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="mt-10 pt-6 border-t border-whiskey-900/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-whiskey-700">
-          <span>Built for the Portland whiskey community.</span>
-          <span>&copy; {new Date().getFullYear()} Find a Dram. Portland, OR.</span>
+          <span>Built for the Pacific Northwest whiskey community.</span>
+          <span>&copy; 2026 Find a Dram. Pacific Northwest.</span>
         </div>
       </div>
     </footer>

@@ -225,7 +225,7 @@ export function BarClaimForm({ userId, existingBarIds = [] }: BarClaimFormProps)
             )}
           </div>
           <p className="mt-1.5 text-xs text-oak-400">
-            Enter at least 2 characters to search Portland bars
+            Enter at least 2 characters to search bars
           </p>
         </div>
 

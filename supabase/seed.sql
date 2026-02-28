@@ -379,4 +379,32 @@ INSERT INTO bars (id, name, location, address, city, state, country, phone, webs
   'https://www.devilsadvocateedinburgh.co.uk',
   'ChIJdevils00000012edi',
   '{"neighborhood": "Old Town", "seating": 140, "scotch_specialists": true, "whisky_count": 300}'
+),
+
+-- Additional Portland bars
+(
+  '11111111-0000-0000-0000-000000000028',
+  'Bit House Saloon',
+  ST_MakePoint(-122.6601, 45.5175)::geography,
+  '727 SE Grand Ave',
+  'Portland',
+  'OR',
+  'US',
+  '+1 503-954-3913',
+  'https://www.bithousesaloon.com',
+  'ChIJbithouse0028pdx',
+  '{"neighborhood": "Central Eastside", "seating": 60, "craft_cocktails": true, "whiskey_selection": true}'
+),
+(
+  '11111111-0000-0000-0000-000000000029',
+  'Victoria Bar',
+  ST_MakePoint(-122.6215, 45.5453)::geography,
+  '4835 NE 42nd Ave',
+  'Portland',
+  'OR',
+  'US',
+  NULL,
+  NULL,
+  'ChIJvictoria0029pdx',
+  '{"neighborhood": "Alberta Arts District", "seating": 35, "neighborhood_bar": true, "spirits_focus": true}'
 );

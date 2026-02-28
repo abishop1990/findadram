@@ -92,7 +92,7 @@ export function SearchBar({ defaultQuery = '', defaultType = 'whiskey' as Search
             className="pr-4"
           />
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-lg border border-stone-200 bg-white shadow-lg">
+            <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-lg border border-oak-200 bg-white shadow-lg">
               {suggestions.map((s) => (
                 <button
                   key={s.id}
@@ -106,17 +106,17 @@ export function SearchBar({ defaultQuery = '', defaultType = 'whiskey' as Search
             </div>
           )}
         </div>
-        <div className="flex rounded-lg border border-stone-300 overflow-hidden">
+        <div className="flex rounded-lg border border-oak-300 overflow-hidden">
           <button
             type="button"
-            className={`px-3 py-2 text-sm font-medium transition-colors ${type === 'whiskey' ? 'bg-amber-600 text-white' : 'bg-white text-stone-600 hover:bg-stone-50'}`}
+            className={`px-3 py-2 text-sm font-medium transition-colors ${type === 'whiskey' ? 'bg-amber-600 text-white' : 'bg-white text-oak-600 hover:bg-oak-50'}`}
             onClick={() => setType('whiskey')}
           >
             Whiskey
           </button>
           <button
             type="button"
-            className={`px-3 py-2 text-sm font-medium transition-colors ${type === 'bar' ? 'bg-amber-600 text-white' : 'bg-white text-stone-600 hover:bg-stone-50'}`}
+            className={`px-3 py-2 text-sm font-medium transition-colors ${type === 'bar' ? 'bg-amber-600 text-white' : 'bg-white text-oak-600 hover:bg-oak-50'}`}
             onClick={() => setType('bar')}
           >
             Bar

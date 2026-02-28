@@ -55,7 +55,7 @@ export function ConfirmationButtons({ barWhiskeyId, whiskeyName, compact = false
         <span className={submitted === 'confirmed' ? 'text-green-600' : 'text-red-500'}>
           {submitted === 'confirmed' ? '✓ Confirmed' : '✗ Not found'}
         </span>
-        <span className="text-stone-400">— thanks!</span>
+        <span className="text-oak-400">— thanks!</span>
       </div>
     );
   }

@@ -47,7 +47,7 @@ export function ActivityFeed({ barId }: { barId: string }) {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map(i => (
-          <div key={i} className="animate-pulse rounded-lg bg-stone-100 h-16" />
+          <div key={i} className="animate-pulse rounded-lg bg-oak-100 h-16" />
         ))}
       </div>
     );
@@ -56,7 +56,7 @@ export function ActivityFeed({ barId }: { barId: string }) {
   if (activity.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-stone-400 text-sm">No activity yet. Be the first to log a sighting!</p>
+        <p className="text-oak-400 text-sm">No activity yet. Be the first to log a sighting!</p>
       </div>
     );
   }
@@ -66,7 +66,7 @@ export function ActivityFeed({ barId }: { barId: string }) {
       {activity.map((item, index) => (
         <div
           key={index}
-          className="flex items-start gap-3 rounded-lg bg-white border border-stone-100 p-3"
+          className="flex items-start gap-3 rounded-lg bg-white border border-oak-100 p-3"
         >
           <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${
             item.activity_type === 'sighting'
@@ -78,7 +78,7 @@ export function ActivityFeed({ barId }: { barId: string }) {
             {item.activity_type === 'sighting' ? '🥃' : item.status === 'confirmed' ? '✓' : '✗'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm text-stone-800">
+            <p className="text-sm text-whiskey-800">
               <span className="font-medium">{item.display_name}</span>
               {item.activity_type === 'sighting' ? (
                 <> had <Link href={`/whiskeys/${item.whiskey_id}`} className="font-semibold text-amber-700 hover:underline">{item.whiskey_name}</Link></>
@@ -97,10 +97,10 @@ export function ActivityFeed({ barId }: { barId: string }) {
                   {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
                 </span>
               )}
-              <span className="text-xs text-stone-400">{timeAgo(item.created_at)}</span>
+              <span className="text-xs text-oak-400">{timeAgo(item.created_at)}</span>
             </div>
             {item.notes && (
-              <p className="text-xs text-stone-500 mt-1 italic">&ldquo;{item.notes}&rdquo;</p>
+              <p className="text-xs text-oak-500 mt-1 italic">&ldquo;{item.notes}&rdquo;</p>
             )}
           </div>
         </div>

@@ -4,8 +4,8 @@ import { type ButtonHTMLAttributes, type ReactNode } from 'react';
 
 const variantStyles: Record<string, string> = {
   primary: 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500',
-  secondary: 'bg-stone-100 text-stone-800 hover:bg-stone-200 focus:ring-stone-400',
-  outline: 'border border-stone-300 text-stone-700 hover:bg-stone-50 focus:ring-stone-400',
+  secondary: 'bg-oak-100 text-oak-800 hover:bg-oak-200 focus:ring-oak-400',
+  outline: 'border border-oak-300 text-oak-700 hover:bg-oak-50 focus:ring-oak-400',
 };
 
 const sizeStyles: Record<string, string> = {

@@ -40,24 +40,24 @@ export function WhiskeyList({ whiskeys }: { whiskeys: WhiskeyEntry[] }) {
   }, [whiskeys, sortBy]);
 
   if (whiskeys.length === 0) {
-    return <p className="text-stone-500 text-sm">No whiskeys listed yet.</p>;
+    return <p className="text-oak-500 text-sm">No whiskeys listed yet.</p>;
   }
 
   return (
     <div>
       <div className="flex gap-2 mb-3">
-        <span className="text-sm text-stone-500">Sort by:</span>
+        <span className="text-sm text-oak-500">Sort by:</span>
         {(['name', 'price', 'type'] as SortKey[]).map((key) => (
           <button
             key={key}
             onClick={() => setSortBy(key)}
-            className={`text-sm px-2 py-0.5 rounded ${sortBy === key ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-100'}`}
+            className={`text-sm px-2 py-0.5 rounded ${sortBy === key ? 'bg-amber-100 text-amber-800 font-medium' : 'text-oak-600 hover:bg-oak-100'}`}
           >
             {key.charAt(0).toUpperCase() + key.slice(1)}
           </button>
         ))}
       </div>
-      <div className="divide-y divide-stone-100">
+      <div className="divide-y divide-oak-100">
         {sorted.map((entry) => (
           <Link
             key={entry.id}
@@ -65,16 +65,16 @@ export function WhiskeyList({ whiskeys }: { whiskeys: WhiskeyEntry[] }) {
             className="flex items-center justify-between py-3 hover:bg-amber-50/50 px-2 -mx-2 rounded transition-colors"
           >
             <div className="min-w-0 flex-1">
-              <p className="font-medium text-stone-900 truncate">{entry.whiskey.name}</p>
+              <p className="font-medium text-whiskey-900 truncate">{entry.whiskey.name}</p>
               <div className="flex items-center gap-2 mt-0.5">
                 {entry.whiskey.distillery && (
-                  <span className="text-xs text-stone-500">{entry.whiskey.distillery}</span>
+                  <span className="text-xs text-oak-500">{entry.whiskey.distillery}</span>
                 )}
                 {entry.whiskey.type && entry.whiskey.type !== 'other' && (
                   <Badge variant="default">{entry.whiskey.type.replace('_', ' ')}</Badge>
                 )}
                 {entry.whiskey.age && (
-                  <span className="text-xs text-stone-400">{entry.whiskey.age}yr</span>
+                  <span className="text-xs text-oak-400">{entry.whiskey.age}yr</span>
                 )}
               </div>
             </div>
@@ -83,7 +83,7 @@ export function WhiskeyList({ whiskeys }: { whiskeys: WhiskeyEntry[] }) {
                 <p className="font-semibold text-amber-700">${entry.price.toFixed(2)}</p>
               )}
               {entry.pour_size && (
-                <p className="text-xs text-stone-400">{entry.pour_size}</p>
+                <p className="text-xs text-oak-400">{entry.pour_size}</p>
               )}
             </div>
           </Link>

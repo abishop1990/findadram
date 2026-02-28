@@ -93,14 +93,14 @@ export function MenuUpload() {
 
       <div className="relative text-center">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-stone-200" />
+          <div className="w-full border-t border-oak-200" />
         </div>
-        <span className="relative bg-amber-50 px-4 text-sm text-stone-500">or</span>
+        <span className="relative bg-amber-50 px-4 text-sm text-oak-500">or</span>
       </div>
 
       <div
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-          dragOver ? 'border-amber-500 bg-amber-50' : 'border-stone-300 hover:border-amber-400'
+          dragOver ? 'border-amber-500 bg-amber-50' : 'border-oak-300 hover:border-amber-400'
         }`}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
@@ -122,10 +122,10 @@ export function MenuUpload() {
             if (file) handleFileUpload(file);
           }}
         />
-        <svg className="mx-auto h-12 w-12 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="mx-auto h-12 w-12 text-oak-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
-        <p className="mt-2 text-sm text-stone-600">
+        <p className="mt-2 text-sm text-oak-600">
           {loading ? 'Processing...' : 'Drop a menu image here or click to upload'}
         </p>
       </div>
@@ -138,15 +138,15 @@ export function MenuUpload() {
 
       {result && result.whiskeys.length > 0 && (
         <Card>
-          <h3 className="font-semibold text-stone-900 mb-3">
+          <h3 className="font-semibold text-whiskey-900 mb-3">
             Found {result.whiskeys.length} whiskeys
           </h3>
-          <div className="divide-y divide-stone-100">
+          <div className="divide-y divide-oak-100">
             {result.whiskeys.map((w, i) => (
               <div key={i} className="py-2 flex justify-between">
                 <div>
-                  <p className="font-medium text-stone-900">{w.name}</p>
-                  {w.distillery && <p className="text-xs text-stone-500">{w.distillery}</p>}
+                  <p className="font-medium text-whiskey-900">{w.name}</p>
+                  {w.distillery && <p className="text-xs text-oak-500">{w.distillery}</p>}
                 </div>
                 {w.price != null && (
                   <p className="text-amber-700 font-medium">${w.price.toFixed(2)}</p>
@@ -158,7 +158,7 @@ export function MenuUpload() {
       )}
 
       {result && result.whiskeys.length === 0 && (
-        <p className="text-stone-500 text-sm text-center">No whiskeys found in the provided content.</p>
+        <p className="text-oak-500 text-sm text-center">No whiskeys found in the provided content.</p>
       )}
     </div>
   );

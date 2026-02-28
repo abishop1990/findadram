@@ -28,9 +28,9 @@ export function WhiskeyCard({ id, name, distillery, type, age, bar_count, neares
     <Link href={`/whiskeys/${id}`}>
       <Card className="hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
         <div>
-          <h3 className="font-semibold text-stone-900">{name}</h3>
+          <h3 className="font-semibold text-whiskey-900">{name}</h3>
           {distillery && (
-            <p className="text-sm text-stone-500 mt-0.5">{distillery}</p>
+            <p className="text-sm text-oak-500 mt-0.5">{distillery}</p>
           )}
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             {type && type !== 'other' && (
@@ -48,7 +48,7 @@ export function WhiskeyCard({ id, name, distillery, type, age, bar_count, neares
             )}
           </div>
           {nearest_bar_name && (
-            <p className="text-xs text-stone-400 mt-2">
+            <p className="text-xs text-oak-400 mt-2">
               Nearest: {nearest_bar_name}
               {nearest_bar_distance != null && ` (${(nearest_bar_distance / 1609.34).toFixed(1)} mi)`}
             </p>

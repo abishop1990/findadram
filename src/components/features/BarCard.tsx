@@ -19,9 +19,9 @@ export function BarCard({ id, name, address, city, state, distance_meters, whisk
       <Card className="hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">
-            <h3 className="font-semibold text-stone-900 truncate">{name}</h3>
+            <h3 className="font-semibold text-whiskey-900 truncate">{name}</h3>
             {(address || city) && (
-              <p className="text-sm text-stone-500 mt-1 truncate">
+              <p className="text-sm text-oak-500 mt-1 truncate">
                 {address || [city, state].filter(Boolean).join(', ')}
               </p>
             )}

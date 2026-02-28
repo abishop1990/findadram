@@ -18,11 +18,11 @@ interface BarEntry {
 
 export function BarList({ bars }: { bars: BarEntry[] }) {
   if (bars.length === 0) {
-    return <p className="text-stone-500 text-sm">No bars carry this whiskey yet.</p>;
+    return <p className="text-oak-500 text-sm">No bars carry this whiskey yet.</p>;
   }
 
   return (
-    <div className="divide-y divide-stone-100">
+    <div className="divide-y divide-oak-100">
       {bars.map((entry) => (
         <Link
           key={entry.id}
@@ -30,8 +30,8 @@ export function BarList({ bars }: { bars: BarEntry[] }) {
           className="flex items-center justify-between py-3 hover:bg-amber-50/50 px-2 -mx-2 rounded transition-colors"
         >
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-stone-900">{entry.bar.name}</p>
-            <p className="text-sm text-stone-500 truncate">
+            <p className="font-medium text-whiskey-900">{entry.bar.name}</p>
+            <p className="text-sm text-oak-500 truncate">
               {entry.bar.address || [entry.bar.city, entry.bar.state].filter(Boolean).join(', ')}
             </p>
           </div>

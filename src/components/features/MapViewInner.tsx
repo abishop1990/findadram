@@ -51,7 +51,7 @@ export function MapViewInner({ center, markers, zoom = 13, className = '' }: Map
             <Popup>
               <div>
                 <strong>{marker.name}</strong>
-                {marker.address && <p className="text-xs text-stone-500 mt-1">{marker.address}</p>}
+                {marker.address && <p className="text-xs text-oak-500 mt-1">{marker.address}</p>}
               </div>
             </Popup>
           </Marker>

@@ -5,6 +5,8 @@ import { SearchBar } from '@/components/features/SearchBar';
 export default async function BarsPage() {
   const supabase = await createServerSupabaseClient();
 
+  // NOTE: do NOT select 'category' — that column does not exist on the bars table.
+  // Selecting a non-existent column causes Supabase to return null, breaking the page.
   const { data: bars } = await supabase
     .from('bars')
     .select('id, name, address, city, state, bar_whiskeys(count)')

@@ -172,7 +172,6 @@ export default async function SearchPage({
                     address={bar.address}
                     city={bar.city}
                     state={bar.state}
-                    category={bar.category}
                     distance_meters={bar.distance_meters}
                     whiskey_count={bar.whiskey_count}
                   />

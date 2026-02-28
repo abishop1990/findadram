@@ -16,16 +16,25 @@ interface BarCardProps {
 export function BarCard({ id, name, address, city, state, distance_meters, whiskey_count }: BarCardProps) {
   return (
     <Link href={`/bars/${id}`}>
-      <Card className="hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
-        <div className="flex items-start justify-between">
+      <Card className="border-l-4 border-l-amber-500 hover:border-l-amber-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer">
+        <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-whiskey-900 truncate">{name}</h3>
             {(address || city) && (
-              <p className="text-sm text-oak-500 mt-1 truncate">
-                {address || [city, state].filter(Boolean).join(', ')}
-              </p>
+              <div className="flex items-start gap-2 mt-1">
+                <svg className="w-4 h-4 text-oak-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                <div className="min-w-0 flex-1">
+                  {address ? (
+                    <p className="text-sm text-oak-500 truncate">{address}</p>
+                  ) : (
+                    <p className="text-sm text-oak-500">{[city, state].filter(Boolean).join(', ')}</p>
+                  )}
+                </div>
+              </div>
             )}
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-3">
               {whiskey_count !== undefined && whiskey_count > 0 && (
                 <Badge variant="amber">{whiskey_count} whiskeys</Badge>
               )}

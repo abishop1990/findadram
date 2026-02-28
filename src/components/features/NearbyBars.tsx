@@ -6,13 +6,17 @@ import { useLocation } from '@/hooks/useLocation';
 import { BarCard } from '@/components/features/BarCard';
 import type { BarSearchResult } from '@/types/database';
 
+interface NearbyBarsProps {
+  limit?: number;
+}
+
 interface NearbyBarsState {
   bars: BarSearchResult[];
   loading: boolean;
   error: string | null;
 }
 
-export function NearbyBars() {
+export function NearbyBars({ limit = 8 }: NearbyBarsProps) {
   const { coords, loading: locationLoading, error: locationError, requestLocation } = useLocation();
   const [{ bars, loading: barsLoading, error: barsError }, setState] = useState<NearbyBarsState>({
     bars: [],
@@ -32,7 +36,7 @@ export function NearbyBars() {
         type: 'bar',
         lat: String(coords!.lat),
         lng: String(coords!.lng),
-        limit: '8',
+        limit: String(limit),
       });
 
       try {
@@ -62,7 +66,7 @@ export function NearbyBars() {
     return () => {
       controller.abort();
     };
-  }, [coords]);
+  }, [coords, limit]);
 
   // --- No location yet ---
   if (!coords) {
@@ -170,6 +174,10 @@ export function NearbyBars() {
   }
 
   // --- Empty results ---
+  const browseAllHref = coords
+    ? `/search?type=bar&lat=${coords.lat}&lng=${coords.lng}`
+    : '/search?type=bar';
+
   if (bars.length === 0) {
     return (
       <section aria-label="Nearby bars">
@@ -177,7 +185,7 @@ export function NearbyBars() {
         <div className="rounded-xl border border-oak-200 bg-whiskey-50 p-5 text-center">
           <p className="text-sm text-oak-500">No bars found within 50 km. Try searching a different area.</p>
           <Link
-            href="/search?type=bar"
+            href={browseAllHref}
             className="mt-3 inline-block text-sm font-medium text-whiskey-500 underline underline-offset-2 hover:text-whiskey-600"
           >
             Browse all bars
@@ -188,12 +196,16 @@ export function NearbyBars() {
   }
 
   // --- Results ---
+  const seeAllHref = coords
+    ? `/search?type=bar&lat=${coords.lat}&lng=${coords.lng}`
+    : '/search?type=bar';
+
   return (
     <section aria-label="Nearby bars">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-whiskey-900">Bars near you</h2>
         <Link
-          href="/search?type=bar"
+          href={seeAllHref}
           className="text-sm font-medium text-whiskey-500 hover:text-whiskey-600 hover:underline hover:underline-offset-2 transition-colors"
         >
           See all nearby &rarr;
@@ -208,6 +220,7 @@ export function NearbyBars() {
             address={bar.address}
             city={bar.city}
             state={bar.state}
+            category={bar.category}
             distance_meters={bar.distance_meters}
             whiskey_count={bar.whiskey_count}
           />

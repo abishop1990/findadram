@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { SearchBar } from '@/components/features/SearchBar';
-import { LocationPrompt } from '@/components/features/LocationPrompt';
 import { BarCard } from '@/components/features/BarCard';
 import { WhiskeyCard } from '@/components/features/WhiskeyCard';
 import { NearbyBars } from '@/components/features/NearbyBars';
@@ -35,7 +34,7 @@ export default async function HomePage() {
   ] = await Promise.all([
     supabase
       .from('bars')
-      .select('id, name, address, city, state, bar_whiskeys(count)')
+      .select('id, name, address, city, state, category, bar_whiskeys(count)')
       .order('name', { ascending: true })
       .limit(6),
     supabase
@@ -148,7 +147,7 @@ export default async function HomePage() {
           </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-whiskey-300 mb-2 sm:mb-3 max-w-xl mx-auto leading-relaxed">
-            Find whiskeys at bars near you. Track prices. Share discoveries.
+            Find your perfect whiskey — at bars, restaurants, or liquor stores across the Pacific Northwest.
           </p>
           <p className="text-xs sm:text-sm text-whiskey-500 mb-8 sm:mb-10">
             Search by name, distillery, or style — or use your location to see what&apos;s nearby.
@@ -156,7 +155,6 @@ export default async function HomePage() {
 
           <div className="flex flex-col items-center gap-3 sm:gap-4">
             <SearchBar />
-            <LocationPrompt />
           </div>
         </div>
       </section>
@@ -175,6 +173,87 @@ export default async function HomePage() {
               </div>
             ))}
           </dl>
+        </div>
+      </section>
+
+      {/* ── Three Ways to Find Your Dram ─────────────────────────────────── */}
+      <section className="mx-auto max-w-6xl px-4 py-10" aria-labelledby="discover-heading">
+        <h2
+          id="discover-heading"
+          className="text-center text-2xl font-bold text-whiskey-900 mb-2"
+        >
+          Three Ways to Find Your Dram
+        </h2>
+        <p className="text-center text-sm text-oak-500 mb-8 max-w-lg mx-auto">
+          Whether you want a pour at a bar, a bottle to take home, or to explore what&apos;s out there — we&apos;ve got you.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Bars */}
+          <Link
+            href="/bars"
+            className="group relative rounded-xl border border-oak-200 bg-white p-6 shadow-sm hover:border-whiskey-300 hover:shadow-md transition-all text-center"
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-whiskey-100 text-whiskey-600 group-hover:bg-whiskey-200 transition-colors">
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-whiskey-900 mb-1">At a Bar</h3>
+            <p className="text-sm text-oak-500 leading-relaxed">
+              Search whiskey menus at bars &amp; restaurants near you. See prices, pours, and reviews.
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-whiskey-600 group-hover:text-whiskey-500 transition-colors">
+              Browse bars
+              <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </span>
+          </Link>
+
+          {/* Bottles */}
+          <Link
+            href="/bottles"
+            className="group relative rounded-xl border border-oak-200 bg-white p-6 shadow-sm hover:border-amber-300 hover:shadow-md transition-all text-center"
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600 group-hover:bg-amber-200 transition-colors">
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-whiskey-900 mb-1">Buy a Bottle</h3>
+            <p className="text-sm text-oak-500 leading-relaxed">
+              Search Oregon OLCC liquor stores for bottles in stock near you. Updated daily.
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-amber-600 group-hover:text-amber-500 transition-colors">
+              Find bottles
+              <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </span>
+          </Link>
+
+          {/* Explore */}
+          <Link
+            href="/whiskeys"
+            className="group relative rounded-xl border border-oak-200 bg-white p-6 shadow-sm hover:border-whiskey-300 hover:shadow-md transition-all text-center"
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-whiskey-100 text-whiskey-600 group-hover:bg-whiskey-200 transition-colors">
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803a7.5 7.5 0 0 0 10.607 0Z" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-whiskey-900 mb-1">Explore Whiskeys</h3>
+            <p className="text-sm text-oak-500 leading-relaxed">
+              Browse our catalog by type, region, or distillery. Find your next favorite dram.
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-whiskey-600 group-hover:text-whiskey-500 transition-colors">
+              Browse catalog
+              <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </span>
+          </Link>
         </div>
       </section>
 
@@ -303,6 +382,7 @@ export default async function HomePage() {
                   address={bar.address}
                   city={bar.city}
                   state={bar.state}
+                  category={(bar as unknown as { category?: string }).category as import('@/types/database').VenueCategory | undefined}
                   whiskey_count={whiskey_count}
                 />
               );
@@ -386,6 +466,15 @@ export default async function HomePage() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
             >
               Browse Bars
+            </Link>
+            <Link
+              href="/bottles"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-whiskey-700 px-6 py-3 text-sm font-medium text-whiskey-300 hover:bg-whiskey-800/50 hover:text-whiskey-100 transition-colors min-h-11 sm:min-h-auto"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+              Find Bottles
             </Link>
           </div>
         </div>
